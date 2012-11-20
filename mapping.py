@@ -1,5 +1,5 @@
 
-from collections import defaultdict
+import networkx as nx
 
 class Mapping:
   """
@@ -7,32 +7,22 @@ class Mapping:
   """
 
   def __init__(self):
-    self.distances = dict()
+    self.G = nx.Graph()
 
-  def add_dist(self, origin, dest, dist):
+  def add_distance(self, origin, dest, dist):
     """
     Connects 'origin' to 'dest' over distance 'dist'
     """
-    if origin < dest:
-      self.distances[ (origin, dest) ] = dist
-    else:
-      self.distances[ (dest, origin) ] = dist
+    self.G.add_edge(origin, dest, weight=dist)
 
-  def is_connected(self, loc1, loc2):
+  def is_connected(self, origin, dest):
     """
-    Checks if 'loc1' is conencted to 'loc2'
+    Checks if 'origin' is connected to 'dest'
     """
-    return (loc1, loc2) in self.distances or (loc2, loc1) in self.distances
+    return self.G.has_edge(origin, dest)
 
-  def get_dist(self, origin, dest):
+  def get_distance(self, origin, dest):
     """
     Get distance
     """
-    if origin > dest:
-      route = (dest, origin)
-    else:
-      route = (origin, dest)
-    if route in self.distances:
-      return self.distances[ route ]
-    else:
-      return None
+    return self.G[origin][dest]
