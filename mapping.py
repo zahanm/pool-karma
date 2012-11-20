@@ -1,7 +1,7 @@
 
 import networkx as nx
 
-class Mapping:
+class Locations:
   """
   Stores the weights from the problem in a distances matrix
   """
