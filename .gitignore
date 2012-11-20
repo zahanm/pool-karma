@@ -1,3 +1,4 @@
+# python
 *.py[cod]
 
 # C extensions
@@ -33,3 +34,9 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# virtualenv
+/lib/
+
+# os x
+.DS_Store
