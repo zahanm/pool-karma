@@ -1,2 +1,5 @@
-pool-karma
+
+Pool Karma
 ==========
+
+Carpooling at Stanford
