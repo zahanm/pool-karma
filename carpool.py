@@ -25,16 +25,10 @@ def read_data(fname):
     ex = Explorer()
     ex.num_locations = int(f.next().strip())
     ex.num_people = ex.num_locations - 1
-    ex.people_locations = [ None ] * ex.num_people
     ex.people_capacity = [ None ] * ex.num_people
     ex.pickup_costs = [ {} ] * ex.num_people
     for i in xrange(ex.num_people):
-       line = f.next().rstrip()
-       m = re.search(r"(\d+)\s+(\d+)", line)
-       person_location = m.group(1)
-       person_capacity = m.group(2)
-       ex.people_locations[i] = person_location
-       ex.people_capacity[i] = person_capacity
+       ex.people_capacity[i] = int(f.next().strip())
     ex.num_edges = int(f.next().strip())
     ex.distances = nx.Graph()
     for i in xrange(ex.num_edges):
