@@ -43,5 +43,6 @@ class Explorer:
       # memoization
       return self.pickup_costs[driver][pass_key]
     # calculate
+    goal = 
     cost = 1.0
     self.pickup_costs[driver][pass_key] = cost
