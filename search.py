@@ -11,6 +11,7 @@ class Explorer:
     self.num_people = None
     self.people_locations = None
     self.people_capacity = None
+    self.pickup_costs = None
 
   def verify_initialized(self):
     """
@@ -26,10 +27,11 @@ class Explorer:
     assert self.people_capacity != None
     for cap in self.people_capacity:
       assert cap != None
+    assert self.pickup_costs != None
 
   def __str__(self):
     """
-    To string
+    toString method
     """
     return "{} locations with {} edges and {} people".format(self.num_locations, self.num_edges, self.num_people)
 
