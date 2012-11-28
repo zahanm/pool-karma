@@ -56,12 +56,12 @@ class Explorer:
     goal = self.num_locations - 1
     cost = 1.0
     self.pickup_costs[driver][pass_key] = cost
-    
+
     # get all possible paths starting from driver to goal
     list_paths = [[driver, passenger_1, passenger_2, passenger_3, goal] \
     for passenger_1 in passengers for passenger_2 in passengers for passenger_3 in passengers \
     if passenger_1 != passenger_2 and passenger_1 != passenger_3 and passenger_2 != passenger_3]
-    
+
     # find minimum path
     min_path = None
     min_path_cost = None
@@ -72,5 +72,5 @@ class Explorer:
       elif path_cost < min_path_cost:
         min_path_cost = path_cost
         min_path = path
-        
+
     return min_path_cost
