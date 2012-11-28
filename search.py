@@ -1,3 +1,4 @@
+import itertools
 
 class Explorer:
   """
@@ -49,21 +50,22 @@ class Explorer:
     Calculate pickup costs
     """
     
-    assert len(passengers) == 3
-    
     pass_key = tuple(sorted(passengers))
     if pass_key in self.pickup_costs[driver]:
       # memorization
       return self.pickup_costs[driver][pass_key]
+      
     # calculate shortest path that passes all these nodes
     goal = self.num_locations - 1
     cost = 1.0
     self.pickup_costs[driver][pass_key] = cost
     
     # get all possible paths starting from driver to goal
-    list_paths = [[driver, passenger_1, passenger_2, passenger_3, goal] \
-    for passenger_1 in passengers for passenger_2 in passengers for passenger_3 in passengers \
-    if passenger_1 != passenger_2 and passenger_1 != passenger_3 and passenger_2 != passenger_3]
+    permutations_passengers = itertools.permutations(passengers, len(passengers))
+    list_paths = []
+    for permutation in permutations_passengers:
+      path = [driver] + permutation + [goal]
+      list_paths.append(path)
     
     # find minimum path
     min_path = None
