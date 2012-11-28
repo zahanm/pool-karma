@@ -48,6 +48,9 @@ class Explorer:
     TODO
     Calculate pickup costs
     """
+    
+    assert len(passengers) == 3
+    
     pass_key = tuple(sorted(passengers))
     if pass_key in self.pickup_costs[driver]:
       # memorization
