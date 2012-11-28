@@ -9,14 +9,13 @@ from search import Explorer
 def read_data(fname):
   """
   Data format:
-  <number of locations>
+  <number of people>
+  <person1 car capacity>
+  <person2 car capacity>
+  ...
   <number of edges>
   <edge1 origin> <edge1 dest> <edge1 weight>
   <edge2 origin> <edge2 dest> <edge2 weight>
-  ...
-  <number of people>
-  <person1 location> <person1 car capacity>
-  <person2 location> <person2 car capacity>
   ...
   """
   with open(fname) as f:
