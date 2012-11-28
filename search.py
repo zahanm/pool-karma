@@ -9,7 +9,6 @@ class Explorer:
     self.num_edges = None
     self.distances = None
     self.num_people = None
-    self.people_locations = None
     self.people_capacity = None
     self.pickup_costs = None
 
@@ -21,7 +20,6 @@ class Explorer:
     assert self.num_edges != None
     assert self.distances != None
     assert self.num_people != None
-    assert self.people_locations != None
     for loc in self.people_locations:
       assert loc != None
     assert self.people_capacity != None
