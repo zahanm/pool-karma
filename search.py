@@ -9,6 +9,7 @@ class Explorer:
     self.num_edges = None
     self.distances = None
     self.num_people = None
+    self.people_locations = None
     self.people_capacity = None
     self.pickup_costs = None
 
