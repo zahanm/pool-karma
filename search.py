@@ -32,3 +32,16 @@ class Explorer:
     To string
     """
     return "{} locations with {} edges and {} people".format(self.num_locations, self.num_edges, self.num_people)
+
+  def pickup_cost(self, driver, passengers):
+    """
+    TODO
+    Calculate pickup costs
+    """
+    pass_key = tuple(sorted(passengers))
+    if pass_key in self.pickup_costs[driver]:
+      # memoization
+      return self.pickup_costs[driver][pass_key]
+    # calculate
+    cost = 1.0
+    self.pickup_costs[driver][pass_key] = cost
