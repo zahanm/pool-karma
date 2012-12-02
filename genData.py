@@ -21,7 +21,7 @@ def main():
             l = x, y
             nodes.append(l)
             #G.add_nodes(i)
-            
+
             if i==numPeople:
                 out.write ("{} {}\n".format(x, y))
                 break
@@ -29,7 +29,7 @@ def main():
                 out.write ("{} {} {}\n".format(x, y, 4))
             else:
                 out.write ("{} {} {}\n".format(x, y, 0))
-            
+
 
 
         for i in range(len(nodes)):
