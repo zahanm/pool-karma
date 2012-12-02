@@ -87,7 +87,7 @@ class Explorer:
     permutations_passengers = itertools.permutations(passengers, len(passengers))
     list_paths = []
     for permutation in permutations_passengers:
-      path = [driver] + list(permutation) + [self.goal]
+      path = [ driver ] + list(permutation) + [ self.num_locations - 1 ]
       list_paths.append(path)
 
     # find minimum path
