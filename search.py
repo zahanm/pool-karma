@@ -57,8 +57,6 @@ class Explorer:
       
     # calculate shortest path that passes all these nodes
     goal = self.num_locations - 1
-    cost = 1.0
-    self.pickup_costs[driver][pass_key] = cost
     
     # get all possible paths starting from driver to goal
     permutations_passengers = itertools.permutations(passengers, len(passengers))
@@ -71,11 +69,12 @@ class Explorer:
     min_path = None
     min_path_cost = None
     for path in list_paths:
-      path_cost = sum([self.distances[path[i]][path[i+1]] for i in range(len(path) - 1)])
+      path_cost = sum([self.distances[path[i]][path[i+1]] for i in xrange(len(path) - 1)])
       if min_path_cost == None:
         min_path_cost = path_cost
       elif path_cost < min_path_cost:
         min_path_cost = path_cost
         min_path = path
-        
+
+    self.pickup_costs[driver][pass_key] = min_path_cost
     return min_path_cost
