@@ -49,8 +49,22 @@ def baseline(ex):
   """
   @param ex: Explorer
   """
-  pass
-
+  minCost = None
+  minAssignment = None
+  for passenger_assignment in ex.iter_passenger_assignments(self, maxn=4):
+    list_driver_cost = [(driver, ex.pickup_cost(driver, passenger_assignment[driver])) for driver in range(len(passenger_assignment)) if passenger_assignment[driver] != None]
+    if (minCost == None) or (sum(list_driver_cost) < min):
+      minCost = sum(list_driver_cost)
+      minAssignment = passenger_assignment
+  
+  print '---* baseline results *---'
+  print 'Minimum cost: ' + str(minCost)
+  print 'Assignment: '
+  for i in range(len(minAssignment)):
+    # is a driver
+    if (minAssignment[i] != None):
+      print str(i) + ' drives ' + str(list(minAssignment[i]))
+  
 def main():
   assert len(sys.argv) == 2
   read_data(sys.argv[1])
