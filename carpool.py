@@ -13,6 +13,7 @@ def read_data(fname):
   <person1 location x-cood> <person1 location y-cood> <person1 car capacity>
   <person2 location x-cood> <person2 location y-cood> <person2 car capacity>
   ...
+  <goal location x-cood> <goal location y-cood>
   <number of edges>
   <edge1 origin> <edge1 dest> <edge1 weight>
   <edge2 origin> <edge2 dest> <edge2 weight>
@@ -42,6 +43,7 @@ def read_data(fname):
       dest = m.group(2)
       wt = m.group(3)
       ex.distances.add_edge(origin, dest, weight=wt)
+    f.next()
     ex.verify_initialized()
     return ex
 

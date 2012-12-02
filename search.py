@@ -13,6 +13,7 @@ class Explorer:
     self.people_locations = None
     self.people_capacity = None
     self.pickup_costs = None
+    self.goal = None
 
   def verify_initialized(self):
     """
@@ -28,6 +29,7 @@ class Explorer:
     for cap in self.people_capacity:
       assert cap != None
     assert self.pickup_costs != None
+    assert self.goal != None
 
   def __str__(self):
     """
