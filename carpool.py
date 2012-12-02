@@ -14,7 +14,6 @@ def read_data(fname):
   <person2 location x-cood> <person2 location y-cood> <person2 car capacity>
   ...
   <goal location x-cood> <goal location y-cood>
-  <number of edges>
   <edge1 origin> <edge1 dest> <edge1 weight>
   <edge2 origin> <edge2 dest> <edge2 weight>
   ...
@@ -24,26 +23,33 @@ def read_data(fname):
   """
   with open(fname) as f:
     ex = Explorer()
+    # num locations
     ex.num_locations = int(f.next().strip())
     ex.num_people = ex.num_locations - 1
     ex.people_locations = [ None ] * ex.num_people
     ex.people_capacity = [ None ] * ex.num_people
     ex.pickup_costs = [ {} ] * ex.num_people
     for i in xrange(ex.num_people):
+      # people location and capacities
       line = f.next().rstrip()
       m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)\s+(\d+)", line)
       ex.people_locations[i] = (m.group(1), m.group(3))
       ex.people_capacity[i] = m.group(5)
-    ex.num_edges = int(f.next().strip())
+    # parse goal location
+    line = f.next().rstrip()
+    m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)")
+    self.goal = (m.group(1), m.group(3))
+    # num edges
+    ex.num_edges = ((ex.num_locations - 1) * ex.num_locations) / 2
     ex.distances = nx.Graph()
     for i in xrange(ex.num_edges):
+      # edge weights
       line = f.next().rstrip()
       m = re.search(r"(\d+)\s+(\d+)\s+(\d+(\.\d+)?)", line)
       origin = m.group(1)
       dest = m.group(2)
       wt = m.group(3)
       ex.distances.add_edge(origin, dest, weight=wt)
-    f.next()
     ex.verify_initialized()
     return ex
 
