@@ -33,12 +33,12 @@ def read_data(fname):
       # people location and capacities
       line = f.next().rstrip()
       m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)\s+(\d+)", line)
-      ex.people_locations[i] = (m.group(1), m.group(3))
-      ex.people_capacity[i] = m.group(5)
+      ex.people_locations[i] = (float(m.group(1)), float(m.group(3)))
+      ex.people_capacity[i] = int(m.group(5))
     # parse goal location
     line = f.next().rstrip()
     m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)", line)
-    ex.goal = (m.group(1), m.group(3))
+    ex.goal = (float(m.group(1)), float(m.group(3)))
     # num edges
     ex.num_edges = ((ex.num_locations - 1) * ex.num_locations) / 2
     ex.distances = nx.Graph()
@@ -46,9 +46,9 @@ def read_data(fname):
       # edge weights
       line = f.next().rstrip()
       m = re.search(r"(\d+)\s+(\d+)\s+(\d+(\.\d+)?)", line)
-      origin = m.group(1)
-      dest = m.group(2)
-      wt = m.group(3)
+      origin = float(m.group(1))
+      dest = float(m.group(2))
+      wt = float(m.group(3))
       ex.distances.add_edge(origin, dest, weight=wt)
     ex.verify_initialized()
     return ex

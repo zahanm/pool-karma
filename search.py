@@ -64,7 +64,7 @@ class Explorer:
     for assignment in itertools.permutations(driver_assignments, r=len(non_drivers)):
       # partition
       p = [ None ] * self.num_people
-      for i in len(non_drivers):
+      for i in xrange(len(non_drivers)):
         if p[assignment[i]] == None:
           p[assignment[i]] = []
         p[assignment[i]].append( non_drivers[i] )
@@ -82,13 +82,11 @@ class Explorer:
       return self.pickup_costs[driver][pass_key]
 
     # calculate shortest path that passes all these nodes
-    goal = self.num_locations - 1
-
     # get all possible paths starting from driver to goal
     permutations_passengers = itertools.permutations(passengers, len(passengers))
     list_paths = []
     for permutation in permutations_passengers:
-      path = [driver] + list(permutation) + [goal]
+      path = [driver] + list(permutation) + [self.goal]
       list_paths.append(path)
 
     # find minimum path
@@ -96,9 +94,11 @@ class Explorer:
     min_path_cost = float("inf")
     for path in list_paths:
       path_cost = 0.0
-      for origin, dest in itertools.izip(path[:-1], path[1:]):
+      for person1, person2 in itertools.izip(path[:-1], path[1:]):
         if path_cost >= min_path_cost:
           break
+        origin = self.distances.nodes()[person1]
+        dest = self.distances.nodes()[person2]
         path_cost += self.distances[origin][dest]
       if path_cost < min_path_cost:
         min_path_cost = path_cost
