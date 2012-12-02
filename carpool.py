@@ -37,8 +37,8 @@ def read_data(fname):
       ex.people_capacity[i] = m.group(5)
     # parse goal location
     line = f.next().rstrip()
-    m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)")
-    self.goal = (m.group(1), m.group(3))
+    m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)", line)
+    ex.goal = (m.group(1), m.group(3))
     # num edges
     ex.num_edges = ((ex.num_locations - 1) * ex.num_locations) / 2
     ex.distances = nx.Graph()
@@ -61,27 +61,33 @@ def baseline(ex):
   min_assignment = None
   for passenger_assignment in ex.iter_passenger_assignments():
     total_cost = 0.0
-    for driver in filter(lambda p: return ex.people_capacity[p] > 0, range(ex.num_people)):
+    for driver in filter(lambda p: ex.people_capacity[p] > 0, range(ex.num_people)):
       if passenger_assignment[driver] == None:
         continue
       if total_cost >= min_cost:
         break
       total_cost += ex.pickup_cost(driver, passenger_assignment[driver])
-    if total_cost < min_cost):
+    if total_cost < min_cost:
       min_cost = total_cost
       min_assignment = passenger_assignment
+  return (min_cost, min_assignment)
 
-  print '---* baseline results *---'
-  print 'Minimum cost: ' + str(min_cost)
-  print 'Assignment: '
-  for i in range(len(min_assignment)):
-    # is a driver
-    if (min_assignment[i] != None):
-      print str(i) + ' drives ' + str(list(min_assignment[i]))
+algorithms = {
+  "baseline": baseline
+}
 
 def main():
   assert len(sys.argv) == 2
-  read_data(sys.argv[1])
+  ex = read_data(sys.argv[1])
+  method = "baseline"
+  min_cost, assignment = algorithms[method](ex)
+  print "---* {} results *---".format(method)
+  print "Minimum cost: {}".format(min_cost)
+  print 'Assignment: '
+  for i in range(len(assignment)):
+    # is a driver
+    if (assignment[i] != None):
+      print "{} drives {}".format(i, assignment[i])
 
 if __name__ == '__main__':
   main()

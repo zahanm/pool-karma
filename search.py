@@ -54,11 +54,11 @@ class Explorer:
     each element of the list is None if the person isn't driving, or a list of passengers
     that driver is taking with him / her
     """
-    non_drivers = filter(lambda p: return self.people_capacity[p] <= 0, range(self.num_people))
-    drivers = filter(lambda p: return self.people_capacity[p] > 0, range(self.num_people))
+    non_drivers = filter(lambda p: self.people_capacity[p] <= 0, range(self.num_people))
+    drivers = filter(lambda p: self.people_capacity[p] > 0, range(self.num_people))
     driver_assignments = []
     for d in drivers:
-      driver_assignments.extend( [d] * self.people_capacity[p] )
+      driver_assignments.extend( [d] * self.people_capacity[d] )
     if len(driver_assignments) < len(non_drivers):
       raise RuntimeError("Not enough capacity to pickup and take everyone")
     for assignment in itertools.permutations(driver_assignments, r=len(non_drivers)):
