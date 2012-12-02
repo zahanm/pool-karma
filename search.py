@@ -10,7 +10,7 @@ class Explorer:
     self.num_edges = None
     self.distances = None
     self.num_people = None
-    self.people_locations = None
+    self.locations = None
     self.people_capacity = None
     self.pickup_costs = None
     self.goal = None
@@ -23,7 +23,8 @@ class Explorer:
     assert self.num_edges != None
     assert self.distances != None
     assert self.num_people != None
-    for loc in self.people_locations:
+    assert self.locations != None
+    for loc in self.locations:
       assert loc != None
     assert self.people_capacity != None
     for cap in self.people_capacity:
@@ -94,12 +95,10 @@ class Explorer:
     min_path_cost = float("inf")
     for path in list_paths:
       path_cost = 0.0
-      for person1, person2 in itertools.izip(path[:-1], path[1:]):
+      for origin, dest in itertools.izip(path[:-1], path[1:]):
         if path_cost >= min_path_cost:
           break
-        origin = self.distances.nodes()[person1]
-        dest = self.distances.nodes()[person2]
-        path_cost += self.distances[origin][dest]
+        path_cost += self.distances[origin][dest]["weight"]
       if path_cost < min_path_cost:
         min_path_cost = path_cost
         min_path = path

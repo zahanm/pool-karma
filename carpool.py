@@ -14,8 +14,8 @@ def read_data(fname):
   <person2 location x-cood> <person2 location y-cood> <person2 car capacity>
   ...
   <goal location x-cood> <goal location y-cood>
-  <edge1 origin> <edge1 dest> <edge1 weight>
-  <edge2 origin> <edge2 dest> <edge2 weight>
+  <edge1 origin id> <edge1 dest id> <edge1 weight>
+  <edge2 origin id> <edge2 dest id> <edge2 weight>
   ...
 
   note that person-id is the same as location-id
@@ -26,19 +26,20 @@ def read_data(fname):
     # num locations
     ex.num_locations = int(f.next().strip())
     ex.num_people = ex.num_locations - 1
-    ex.people_locations = [ None ] * ex.num_people
+    ex.locations = [ None ] * ex.num_locations
     ex.people_capacity = [ None ] * ex.num_people
     ex.pickup_costs = [ {} ] * ex.num_people
     for i in xrange(ex.num_people):
       # people location and capacities
       line = f.next().rstrip()
       m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)\s+(\d+)", line)
-      ex.people_locations[i] = (float(m.group(1)), float(m.group(3)))
+      ex.locations[i] = (float(m.group(1)), float(m.group(3)))
       ex.people_capacity[i] = int(m.group(5))
     # parse goal location
     line = f.next().rstrip()
     m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)", line)
     ex.goal = (float(m.group(1)), float(m.group(3)))
+    ex.locations[-1] = ex.goal
     # num edges
     ex.num_edges = ((ex.num_locations - 1) * ex.num_locations) / 2
     ex.distances = nx.Graph()
@@ -46,8 +47,8 @@ def read_data(fname):
       # edge weights
       line = f.next().rstrip()
       m = re.search(r"(\d+)\s+(\d+)\s+(\d+(\.\d+)?)", line)
-      origin = float(m.group(1))
-      dest = float(m.group(2))
+      origin = int(m.group(1))
+      dest = int(m.group(2))
       wt = float(m.group(3))
       ex.distances.add_edge(origin, dest, weight=wt)
     ex.verify_initialized()
