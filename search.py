@@ -47,6 +47,10 @@ class Explorer:
   def iter_passenger_assignments(self, maxn=4):
     """
     all possible passenger assignments, for all drivers
+    @return iterable
+    each iteration yields a list, num_people in length
+    each element of the list is None if the person isn't driving, or a list of passengers
+    that driver is taking with him
     """
     assignment = [ None ] * self.num_people
     assignment[0] = range(self.num_people)
@@ -57,30 +61,32 @@ class Explorer:
     TODO
     Calculate pickup costs
     """
-    
+
     pass_key = tuple(sorted(passengers))
     if pass_key in self.pickup_costs[driver]:
       # memorization
       return self.pickup_costs[driver][pass_key]
-      
+
     # calculate shortest path that passes all these nodes
     goal = self.num_locations - 1
-    
+
     # get all possible paths starting from driver to goal
     permutations_passengers = itertools.permutations(passengers, len(passengers))
     list_paths = []
     for permutation in permutations_passengers:
       path = [driver] + list(permutation) + [goal]
       list_paths.append(path)
-    
+
     # find minimum path
     min_path = None
-    min_path_cost = None
+    min_path_cost = float("inf")
     for path in list_paths:
-      path_cost = sum([self.distances[path[i]][path[i+1]] for i in xrange(len(path) - 1)])
-      if min_path_cost == None:
-        min_path_cost = path_cost
-      elif path_cost < min_path_cost:
+      path_cost = 0.0
+      for origin, dest in itertools.izip(path[:-1], path[1:]):
+        if path_cost >= min_path_cost:
+          break
+        path_cost += self.distances[origin][dest]
+      if path_cost < min_path_cost:
         min_path_cost = path_cost
         min_path = path
 
