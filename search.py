@@ -48,7 +48,9 @@ class Explorer:
     """
     all possible passenger assignments, for all drivers
     """
-    pass
+    assignment = [ None ] * self.num_people
+    assignment[0] = range(self.num_people)
+    yield assignment
 
   def pickup_cost(self, driver, passengers):
     """
