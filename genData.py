@@ -12,7 +12,7 @@ def main():
     #G=nx.Graph()
     nodes = []
     carNodes = random.sample(range(numPeople), numCars)
-    with open("data.txt", "w") as out:
+    with open("data/generated.txt", "w") as out:
         out.write("{}\n".format(numPeople+1))
         for i in range(numPeople+1):
             x = random.randint(0, width)
