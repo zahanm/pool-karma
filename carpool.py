@@ -59,7 +59,6 @@ def baseline(ex):
       if total_cost >= min_cost:
         break
       total_cost += ex.pickup_cost(driver, passenger_assignment[driver])
-    list_driver_cost = [(driver, ex.pickup_cost(driver, passenger_assignment[driver])) for driver in range(len(passenger_assignment)) if passenger_assignment[driver] != None]
     if total_cost < min_cost):
       min_cost = total_cost
       min_assignment = passenger_assignment
