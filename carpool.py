@@ -43,7 +43,13 @@ def read_data(fname):
       wt = m.group(3)
       ex.distances.add_edge(origin, dest, weight=wt)
     ex.verify_initialized()
-    print ex
+    return ex
+
+def baseline(ex):
+  """
+  @param ex: Explorer
+  """
+  pass
 
 def main():
   assert len(sys.argv) == 2

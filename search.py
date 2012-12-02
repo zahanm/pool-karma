@@ -44,6 +44,12 @@ class Explorer:
       for pass_group in itertools.combinations(other_people, i):
         yield pass_group
 
+  def iter_pass_assignments(self, maxn=4):
+    """
+    all possible passenger assignments, for all drivers
+    """
+    pass
+
   def pickup_cost(self, driver, passengers):
     """
     TODO
