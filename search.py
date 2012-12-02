@@ -44,7 +44,7 @@ class Explorer:
       for pass_group in itertools.combinations(other_people, i):
         yield pass_group
 
-  def iter_pass_assignments(self, maxn=4):
+  def iter_passenger_assignments(self, maxn=4):
     """
     all possible passenger assignments, for all drivers
     """
