@@ -3,6 +3,7 @@ import random
 import sys
 import re
 import networkx as nx
+import numpy as np
 import matplotlib.pyplot as plt
 
 # generate random locations for people and goal state
@@ -49,24 +50,27 @@ def gen(args):
 def graph(fname):
   with open(fname) as f:
     num_locations = int(f.next().strip())
+    xs = np.empty(num_locations, dtype=float)
+    ys = np.empty(num_locations, dtype=float)
+    cats = np.empty(num_locations, dtype='unint8')
     no_cars_xs, no_cars_ys, cars_xs, cars_ys = [], [], [], []
     for loc in xrange(num_locations - 1):
       # people locations
       line = f.next().rstrip()
       m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)\s+(\d+)", line)
-      if int(m.group(5)) > 0:
-        cars_xs.append(float(m.group(1)))
-        cars_ys.append(float(m.group(3)))
-      else:
-        no_cars_xs.append(float(m.group(1)))
-        no_cars_ys.append(float(m.group(3)))
+      xs[loc] = float(m.group(1))
+      ys[loc] = float(m.group(3))
+      cat[loc] = 1 if int(m.group(5)) > 0 else 2
     # goal
     line = f.next().rstrip()
     m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)", line)
-    goal = (float(m.group(1)), float(m.group(3)))
-    plt.plot(no_cars_xs, no_cars_ys, "bo")
-    plt.plot(cars_xs, cars_ys, "ro")
-    plt.plot([ goal[0] ], [ goal[1] ], "go")
+    loc = num_locations - 1
+    xs[loc] = float(m.group(1))
+    ys[loc] = float(m.group(3))
+    cat[loc] = 3
+    plt.plot(xs[ cats == 1 ], ys[ cats == 1 ], "bo")
+    plt.plot(xs[ cats == 2 ], ys[ cats == 2 ], "ro")
+    plt.plot(xs[ cats == 3 ], ys[ cats == 3 ], "yo")
     plt.show()
 
 def dist(a,b):
