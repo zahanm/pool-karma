@@ -38,8 +38,6 @@ def gen(args):
             else:
                 out.write ("{} {} {}\n".format(x, y, 0))
 
-
-
         for i in range(len(nodes)):
             for j in range(len(nodes)):
                 if i < j:
@@ -65,10 +63,10 @@ def graph(fname):
     # goal
     line = f.next().rstrip()
     m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)", line)
-    no_cars_xs.append(float(m.group(1)))
-    no_cars_ys.append(float(m.group(3)))
+    goal = (float(m.group(1)), float(m.group(3)))
     plt.plot(no_cars_xs, no_cars_ys, "bo")
     plt.plot(cars_xs, cars_ys, "ro")
+    plt.plot([ goal[0] ], [ goal[1] ], "go")
     plt.show()
 
 def dist(a,b):
