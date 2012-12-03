@@ -17,7 +17,7 @@ def gen(args):
     #G=nx.Graph()
     nodes = []
     carNodes = random.sample(range(numPeople), numCars)
-    filename = "data/generated_{}_{}_{}_{}.txt".format(numPeople, numCars, width, height)
+    filename = "data/generated_{}_{}_{}_{}.txt".format(numPeople, numCars, int(width), int(height))
     with open(filename, "w") as out:
 
         out.write("{}\n".format( numPeople + 1 ))
