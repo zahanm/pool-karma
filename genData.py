@@ -47,7 +47,7 @@ def main():
                     dist_i_j = dist(nodes[i], nodes[j])
                     #G.add_edge(i, j, weight=dist_i_j)
                     out.write("{} {} {}\n".format(i, j, dist_i_j))
-
+    print "Written to: {}".format(filename)
 
 #nx.draw(G)
 

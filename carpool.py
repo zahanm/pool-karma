@@ -71,7 +71,6 @@ def baseline(ex):
     if total_cost < min_cost:
       min_cost = total_cost
       min_assignment = passenger_assignment
-  print "Assignment: {} => cost {}".format(min_assignment, min_cost)
   return (min_cost, min_assignment)
 
 algorithms = {

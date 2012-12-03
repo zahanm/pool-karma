@@ -103,6 +103,7 @@ class Explorer:
       if path_cost < min_path_cost:
         min_path_cost = path_cost
         min_path = path
+    print "Driver: {}, Assignment: {} => Cost: {}".format(driver, passengers, min_path_cost)
 
     self.pickup_costs[driver][pass_key] = min_path_cost
     return min_path_cost
