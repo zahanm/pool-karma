@@ -3,6 +3,7 @@ import random
 import sys
 import re
 import itertools
+import os.path as path
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
@@ -76,10 +77,14 @@ def graph(fname):
       else:
         color = "green"
       plt.text(x, y, str(i), color=color)
+    # old plotting code
     # plt.plot(xs[ cats == 1 ], ys[ cats == 1 ], "bo")
     # plt.plot(xs[ cats == 2 ], ys[ cats == 2 ], "ro")
     # plt.plot(xs[ cats == 3 ], ys[ cats == 3 ], "yo")
-    plt.show()
+    if sys.argv[1] == "show":
+      plt.show()
+    else:
+      plt.savefig(path.join('plots', path.splitext(path.basename(fname))[0] + '.png'))
 
 def dist(a,b):
     dist = ((a[0]-b[0])**2 + (a[1]-b[1])**2)**0.5
@@ -92,6 +97,7 @@ if __name__ == '__main__':
     graph(sys.argv[2])
   else:
     print "usage {} <gen|graph>".format(__file__)
-    print "usage gen: {} gen <numPeople> <numCars> <worldWidth> <worldHeight>".format(__file__)
-    print "usage gen: {} graph <filename>".format(__file__)
+    print "usage: {} gen <numPeople> <numCars> <worldWidth> <worldHeight>".format(__file__)
+    print "usage: {} show <filename>".format(__file__)
+    print "usage: {} graph <filename>".format(__file__)
     sys.exit(1)
