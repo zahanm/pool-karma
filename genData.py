@@ -85,7 +85,7 @@ def graph(fname):
     if sys.argv[1] == "show":
       plt.show()
     else:
-      wd = path.dirname(os.abspath(__file__))
+      wd = path.dirname(path.abspath(__file__))
       if not path.exists(path.join(wd, 'plots')):
         os.mkdir(path.join(wd, 'plots'))
       plt.savefig(path.join(wd, 'plots', path.splitext(path.basename(fname))[0] + '.png'))
