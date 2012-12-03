@@ -1,18 +1,25 @@
 import random
+import sys
 #import networkx as nx
 #import matplotlib.pyplot as plt
 
 # generate random locations for people and goal state
 def main():
-    numPeople = 5
-    numCars = 2
-    width = 10
-    height = 10
+    assert len(sys.argv) == 5
+    # numPeople = 5
+    # numCars = 2
+    # width = 10
+    # height = 10
+    numPeople = int(sys.argv[1])
+    numCars = int(sys.argv[2])
+    width = int(sys.argv[3])
+    height = int(sys.argv[4])
 
     #G=nx.Graph()
     nodes = []
     carNodes = random.sample(range(numPeople), numCars)
-    with open("data/generated.txt", "w") as out:
+    filename = "data/generated_"+sys.argv[1]+"_"+sys.argv[2]+"_"+sys.argv[3]+"_"+sys.argv[4]+".txt"
+    with open(filename, "w") as out:
         out.write("{}\n".format(numPeople+1))
         for i in range(numPeople+1):
             x = random.randint(0, width)
