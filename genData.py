@@ -72,9 +72,9 @@ def graph(fname):
     print "Plotting: {}".format([-0.5, np.max(xs) + 0.5, -0.5, np.max(ys) + 0.5])
     plt.axis([-0.5, np.max(xs) + 0.5, -0.5, np.max(ys) + 0.5])
     for i, (x, y) in enumerate(itertools.izip(xs, ys)):
-      if cat[i] == 1:
+      if cats[i] == 1:
         style = "bo"
-      elif cat[i] == 2:
+      elif cats[i] == 2:
         style = "ro"
       else:
         style = "yo"
