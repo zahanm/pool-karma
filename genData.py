@@ -52,7 +52,7 @@ def graph(fname):
     num_locations = int(f.next().strip())
     xs = np.empty(num_locations, dtype=float)
     ys = np.empty(num_locations, dtype=float)
-    cats = np.empty(num_locations, dtype='unint8')
+    cats = np.empty(num_locations, dtype='uint8')
     no_cars_xs, no_cars_ys, cars_xs, cars_ys = [], [], [], []
     for loc in xrange(num_locations - 1):
       # people locations
