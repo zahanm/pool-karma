@@ -9,10 +9,6 @@ import matplotlib.pyplot as plt
 
 # generate random locations for people and goal state
 def gen(args):
-    # numPeople = 5
-    # numCars = 2
-    # width = 10
-    # height = 10
     numPeople = int(args[1])
     numCars = int(args[2])
     width = float(args[3])
@@ -23,16 +19,17 @@ def gen(args):
     carNodes = random.sample(range(numPeople), numCars)
     filename = "data/generated_"+sys.argv[1]+"_"+sys.argv[2]+"_"+sys.argv[3]+"_"+sys.argv[4]+".txt"
     with open(filename, "w") as out:
-        out.write("{}\n".format(numPeople+1))
-        for i in range(numPeople+1):
-            x = random.randint(0, width)
-            y = random.randint(0, height)
+
+        out.write("{}\n".format( numPeople + 1 ))
+        for i in xrange(numPeople + 1):
+            x = random.uniform(0, width)
+            y = random.uniform(0, height)
 
             l = x, y
             nodes.append(l)
             #G.add_nodes(i)
 
-            if i==numPeople:
+            if i == numPeople:
                 out.write ("{} {}\n".format(x, y))
                 break
             if (i in carNodes):
