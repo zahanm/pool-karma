@@ -85,6 +85,8 @@ class Explorer:
       return self.pickup_costs[driver][pass_key]
 
     # calculate shortest path that passes all these nodes
+    print "Driver: {}, Assignment: {} -- ".format(driver, passengers),
+
     # get all possible paths starting from driver to goal
     list_paths = []
     for permutation in itertools.permutations(passengers, len(passengers)):
@@ -103,7 +105,7 @@ class Explorer:
       if path_cost < min_path_cost:
         min_path_cost = path_cost
         min_path = path
-    print "Driver: {}, Assignment: {} => Cost: {}".format(driver, passengers, min_path_cost)
+    print "=> Cost: {:.4}".format(min_path_cost)
 
     self.pickup_costs[driver][pass_key] = min_path_cost
     return min_path_cost

@@ -80,10 +80,13 @@ algorithms = {
 def main():
   assert len(sys.argv) == 2
   ex = read_data(sys.argv[1])
+  print "---* dataset *---"
+  print ex
+  print "Drivers: {}".format(filter(lambda p: ex.people_capacity[p] > 0, range(ex.num_people)))
   method = "baseline"
   min_cost, assignment = algorithms[method](ex)
   print "---* {} results *---".format(method)
-  print "Minimum cost: {}".format(min_cost)
+  print "Minimum cost: {:.4}".format(min_cost)
   print 'Minimum assignment: '
   for i in range(len(assignment)):
     # is a driver
