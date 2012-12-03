@@ -14,8 +14,8 @@ def main():
     # height = 10
     numPeople = int(sys.argv[1])
     numCars = int(sys.argv[2])
-    width = int(sys.argv[3])
-    height = int(sys.argv[4])
+    width = float(sys.argv[3])
+    height = float(sys.argv[4])
 
     #G=nx.Graph()
     nodes = []

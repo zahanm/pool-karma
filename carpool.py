@@ -90,7 +90,17 @@ def main():
     # is a driver
     if (assignment[i] != None):
       print "{} drives {}".format(i, [i] + assignment[i])
-  print "Edge weights:\n{}".format(ex.distances.edges(data=True))
+  print "Edge weights:"
+  print "\t",
+  print "\t".join([ str(item) for item in ex.distances.nodes() ])
+  for origin in ex.distances.nodes():
+    print "{}\t".format(origin),
+    for dest in ex.distances.nodes():
+      if ex.distances.has_edge(origin, dest):
+        print "{:.3}\t".format(ex.distances[origin][dest]["weight"]),
+      else:
+        print "0.0\t",
+    print
 
 if __name__ == '__main__':
   main()
