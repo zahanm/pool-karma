@@ -77,8 +77,8 @@ def graph(fname):
       elif cats[i] == 2:
         color = "red"
       else:
-        color = "yellow"
-      plt.text(x, y, str(i), color=color) # , fontSize=12
+        color = "green"
+      plt.text(x, y, str(i), color=color)
     # plt.plot(xs[ cats == 1 ], ys[ cats == 1 ], "bo")
     # plt.plot(xs[ cats == 2 ], ys[ cats == 2 ], "ro")
     # plt.plot(xs[ cats == 3 ], ys[ cats == 3 ], "yo")
