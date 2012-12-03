@@ -2,6 +2,7 @@
 import random
 import sys
 import re
+import itertools
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
@@ -68,11 +69,19 @@ def graph(fname):
     xs[loc] = float(m.group(1))
     ys[loc] = float(m.group(3))
     cats[loc] = 3
-    print "Plotting: {}".format([-0.5, -0.5, np.max(xs) + 0.5, np.max(ys) + 0.5])
+    print "Plotting: {}".format([-0.5, np.max(xs) + 0.5, -0.5, np.max(ys) + 0.5])
     plt.axis([-0.5, np.max(xs) + 0.5, -0.5, np.max(ys) + 0.5])
-    plt.plot(xs[ cats == 1 ], ys[ cats == 1 ], "bo")
-    plt.plot(xs[ cats == 2 ], ys[ cats == 2 ], "ro")
-    plt.plot(xs[ cats == 3 ], ys[ cats == 3 ], "yo")
+    for i, (x, y) in enumerate(itertools.izip(xs, ys)):
+      if cat[i] == 1:
+        style = "bo"
+      elif cat[i] == 2:
+        style = "ro"
+      else:
+        style = "yo"
+      plt.plot(x, y, style)
+    # plt.plot(xs[ cats == 1 ], ys[ cats == 1 ], "bo")
+    # plt.plot(xs[ cats == 2 ], ys[ cats == 2 ], "ro")
+    # plt.plot(xs[ cats == 3 ], ys[ cats == 3 ], "yo")
     plt.show()
 
 def dist(a,b):
