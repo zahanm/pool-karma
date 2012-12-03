@@ -3,6 +3,7 @@ import random
 import sys
 import re
 import itertools
+import os
 import os.path as path
 import networkx as nx
 import numpy as np
@@ -84,7 +85,10 @@ def graph(fname):
     if sys.argv[1] == "show":
       plt.show()
     else:
-      plt.savefig(path.join('plots', path.splitext(path.basename(fname))[0] + '.png'))
+      wd = path.dirname(os.abspath(__file__))
+      if not path.exists(path.join(wd, 'plots')):
+        os.mkdir(path.join(wd, 'plots'))
+      plt.savefig(path.join(wd, 'plots', path.splitext(path.basename(fname))[0] + '.png'))
 
 def dist(a,b):
     dist = ((a[0]-b[0])**2 + (a[1]-b[1])**2)**0.5
