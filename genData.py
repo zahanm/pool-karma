@@ -5,7 +5,9 @@ import sys
 
 # generate random locations for people and goal state
 def main():
-    assert len(sys.argv) == 5
+    if len(sys.argv) != 5:
+      print "usage {} <numPeople> <numCars> <worldWidth> <worldHeight>".format(__file__)
+      sys.exit(1)
     # numPeople = 5
     # numCars = 2
     # width = 10
