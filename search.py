@@ -86,9 +86,8 @@ class Explorer:
 
     # calculate shortest path that passes all these nodes
     # get all possible paths starting from driver to goal
-    permutations_passengers = itertools.permutations(passengers, len(passengers))
     list_paths = []
-    for permutation in permutations_passengers:
+    for permutation in itertools.permutations(passengers, len(passengers)):
       path = [ driver ] + list(permutation) + [ self.num_locations - 1 ]
       list_paths.append(path)
 

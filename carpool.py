@@ -89,7 +89,7 @@ def main():
   for i in range(len(assignment)):
     # is a driver
     if (assignment[i] != None):
-      print "{} drives {}".format(i, assignment[i])
+      print "{} drives {}".format(i, [i] + assignment[i])
   print "Edge weights:\n{}".format(ex.distances.edges(data=True))
 
 if __name__ == '__main__':
