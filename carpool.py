@@ -71,6 +71,7 @@ def baseline(ex):
     if total_cost < min_cost:
       min_cost = total_cost
       min_assignment = passenger_assignment
+  print "Assignment: {} => cost {}".format(min_assignment, min_cost)
   return (min_cost, min_assignment)
 
 algorithms = {
@@ -84,11 +85,12 @@ def main():
   min_cost, assignment = algorithms[method](ex)
   print "---* {} results *---".format(method)
   print "Minimum cost: {}".format(min_cost)
-  print 'Assignment: '
+  print 'Minimum assignment: '
   for i in range(len(assignment)):
     # is a driver
     if (assignment[i] != None):
       print "{} drives {}".format(i, assignment[i])
+  print "Edge weights:\n{}".format(ex.distances.edges(data=True))
 
 if __name__ == '__main__':
   main()

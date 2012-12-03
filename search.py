@@ -69,11 +69,13 @@ class Explorer:
         if p[assignment[i]] == None:
           p[assignment[i]] = []
         p[assignment[i]].append( non_drivers[i] )
+      for d in drivers:
+        if p[d] == None:
+          p[d] = []
       yield p
 
   def pickup_cost(self, driver, passengers):
     """
-    TODO
     Calculate pickup costs
     """
 
