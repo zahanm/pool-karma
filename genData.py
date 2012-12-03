@@ -73,12 +73,12 @@ def graph(fname):
     plt.axis([-0.5, np.max(xs) + 0.5, -0.5, np.max(ys) + 0.5])
     for i, (x, y) in enumerate(itertools.izip(xs, ys)):
       if cats[i] == 1:
-        style = "bo"
+        color = "blue"
       elif cats[i] == 2:
-        style = "ro"
+        color = "red"
       else:
-        style = "yo"
-      plt.plot(x, y, style)
+        color = "yellow"
+      plt.text(x, y, str(i), color=color) # , fontSize=12
     # plt.plot(xs[ cats == 1 ], ys[ cats == 1 ], "bo")
     # plt.plot(xs[ cats == 2 ], ys[ cats == 2 ], "ro")
     # plt.plot(xs[ cats == 3 ], ys[ cats == 3 ], "yo")
