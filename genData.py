@@ -60,14 +60,14 @@ def graph(fname):
       m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)\s+(\d+)", line)
       xs[loc] = float(m.group(1))
       ys[loc] = float(m.group(3))
-      cat[loc] = 1 if int(m.group(5)) > 0 else 2
+      cats[loc] = 1 if int(m.group(5)) > 0 else 2
     # goal
     line = f.next().rstrip()
     m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)", line)
     loc = num_locations - 1
     xs[loc] = float(m.group(1))
     ys[loc] = float(m.group(3))
-    cat[loc] = 3
+    cats[loc] = 3
     plt.plot(xs[ cats == 1 ], ys[ cats == 1 ], "bo")
     plt.plot(xs[ cats == 2 ], ys[ cats == 2 ], "ro")
     plt.plot(xs[ cats == 3 ], ys[ cats == 3 ], "yo")
