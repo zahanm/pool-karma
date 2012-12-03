@@ -68,6 +68,7 @@ def graph(fname):
     xs[loc] = float(m.group(1))
     ys[loc] = float(m.group(3))
     cats[loc] = 3
+    print "Plotting: {}".format([-0.5, -0.5, np.max(xs) + 0.5, np.max(ys) + 0.5])
     plt.axes([-0.5, -0.5, np.max(xs) + 0.5, np.max(ys) + 0.5])
     plt.plot(xs[ cats == 1 ], ys[ cats == 1 ], "bo")
     plt.plot(xs[ cats == 2 ], ys[ cats == 2 ], "ro")
