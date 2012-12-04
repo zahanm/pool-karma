@@ -1,6 +1,7 @@
 
 import re
 import sys
+import numpy as np
 
 import networkx as nx
 
@@ -73,8 +74,44 @@ def baseline(ex):
       min_assignment = passenger_assignment
   return (min_cost, min_assignment)
 
+def agglomerative(ex):
+  """
+  @param ex: Explorer
+  """
+  row_names = []
+  col_names = []
+
+  people_with_cars = [i for i,x in enumerate(ex.capacity) if x>0]
+  people_without_cars = [i for i,x in enumerate(ex.capacity) if x==0]
+  # initiate matrix with non-car people on rows and car people on columns
+  first_i = -1
+  distance_matrix =np.matrix()
+  assignments = {}
+  for(i in people_with_cars):
+    person_dist = []
+    row_names.append(i)
+    if(first_i == -1):
+        first_i=i
+    for(j in people_without_cars):
+        if (i==first_i):
+            col_names.append(j)    
+        person_dist.append(ex.distances[i][j])
+    np.append(distance_matrix,person_dist, axis=0)
+
+    min_row = np.unravel_index(np.argmin(distance_matrix), np.shape(distance_matrix))[0]
+    min_col = np.unravel_index(np.argmin(distance_matrix), np.shape(distance_matrix))[1]
+    if(col_names(min_col) ):    #check if car has assignment
+    
+        if(num assignments is cap -1)
+            remove column
+    else:   #add new key value
+
+
+  return (cost, assigment)
+
 algorithms = {
-  "baseline": baseline
+  "baseline": baseline,
+  "agglomerative": agglomerative 
 }
 
 def main():
