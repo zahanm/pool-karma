@@ -78,12 +78,17 @@ algorithms = {
 }
 
 def main():
-  assert len(sys.argv) == 2
-  ex = read_data(sys.argv[1])
+  if len(sys.argv) != 3:
+    print "usage: {} <method> <input filename>".format(__file__)
+    sys.exit(1)
+  ex = read_data(sys.argv[2])
   print "---* dataset *---"
   print ex
   print "Drivers: {}".format(filter(lambda p: ex.people_capacity[p] > 0, range(ex.num_people)))
-  method = "baseline"
+  method = sys.argv[1]
+  if method not in algorithms:
+    print "Invalid method specified: {}".format(method)
+    sys.exit(1)
   min_cost, assignment = algorithms[method](ex)
   print "---* {} results *---".format(method)
   print "Minimum cost: {:.4}".format(min_cost)

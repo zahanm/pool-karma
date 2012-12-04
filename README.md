@@ -8,4 +8,4 @@ TODO
 ----
 
 - printing out driver 9
-- install matplotlib on osx
+- paths plotted on graph
