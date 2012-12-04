@@ -1,6 +1,8 @@
 
 import re
 import sys
+import os
+import os.path as path
 
 import networkx as nx
 
@@ -81,7 +83,8 @@ def main():
   if len(sys.argv) != 3:
     print "usage: {} <method> <input filename>".format(__file__)
     sys.exit(1)
-  ex = read_data(sys.argv[2])
+  inp_fname = sys.argv[2]
+  ex = read_data(inp_fname)
   print "---* dataset *---"
   print ex
   print "Drivers: {}".format(filter(lambda p: ex.people_capacity[p] > 0, range(ex.num_people)))
@@ -90,24 +93,33 @@ def main():
     print "Invalid method specified: {}".format(method)
     sys.exit(1)
   min_cost, assignment = algorithms[method](ex)
+  output_results(ex, inp_fname, method, min_cost, assignment)
+
+def output_results(ex, inp_fname, method, min_cost, assignment):
   print "---* {} results *---".format(method)
-  print "Minimum cost: {:.4}".format(min_cost)
-  print 'Minimum assignment: '
-  for i in range(len(assignment)):
-    # is a driver
-    if (assignment[i] != None):
-      print "{} drives {}".format(i, [i] + assignment[i])
-  print "Edge weights:"
-  print "\t",
-  print "\t".join([ str(item) for item in ex.distances.nodes() ])
-  for origin in ex.distances.nodes():
-    print "{}\t".format(origin),
-    for dest in ex.distances.nodes():
-      if ex.distances.has_edge(origin, dest):
-        print "{:.3}\t".format(ex.distances[origin][dest]["weight"]),
-      else:
-        print "0.0\t",
-    print
+  cwd = path.dirname(path.abspath(__file__))
+  output_folder = path.join(cwd, "output")
+  if not path.exists(output_folder):
+    os.mkdir(output_folder)
+  with open(path.join(output_folder, path.basename(inp_fname)), "w") as out:
+    print "Minimum cost: {:.4}".format(min_cost)
+    print 'Minimum assignment: '
+    for i in range(len(assignment)):
+      # is a driver
+      if (assignment[i] != None):
+        print "{} drives {}".format(i, [i] + assignment[i])
+        out.write("{}: {}\n".format(i, assignment[i]))
+    print "Edge weights:"
+    print "\t",
+    print "\t".join([ str(item) for item in ex.distances.nodes() ])
+    for origin in ex.distances.nodes():
+      print "{}\t".format(origin),
+      for dest in ex.distances.nodes():
+        if ex.distances.has_edge(origin, dest):
+          print "{:.3}\t".format(ex.distances[origin][dest]["weight"]),
+        else:
+          print "0.0\t",
+      print
 
 if __name__ == '__main__':
   main()
