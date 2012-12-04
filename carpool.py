@@ -170,6 +170,7 @@ def projectionDistanceBased(ex):
 
 algorithms = {
   "baseline": baseline
+  "projection": projectionDistanceBased
 }
 
 def main():
