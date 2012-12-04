@@ -83,10 +83,9 @@ def graph(data_fname):
         plt.text(x, y, str(i), color=color)
       # plot paths of drivers
       for i, line in enumerate(gen_output):
-        driver, passengers = line.split(":")
-        driver = int(driver)
-        passengers = [ int(p.group()) for p in re.finditer(r"\d+", passengers) ]
-        route = [ driver ] + passengers + [ goal ]
+        stops = line.rstrip()
+        route = [ int(p.group()) for p in re.finditer(r"\d+", stops) ]
+        route += [ goal ]
         plt.plot(xs[route], ys[route], color=colors[ i % len(colors) ])
       # old plotting code
       # plt.plot(xs[ cats == 1 ], ys[ cats == 1 ], "bo")

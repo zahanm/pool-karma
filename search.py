@@ -106,5 +106,5 @@ class Explorer:
         min_path = path
     print "=> Cost: {:.4}".format(min_path_cost)
 
-    self.pickup_costs[driver][pass_key] = min_path_cost
-    return min_path_cost
+    self.pickup_costs[driver][pass_key] = (min_path_cost, min_path)
+    return (min_path_cost, min_path)

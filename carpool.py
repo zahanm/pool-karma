@@ -69,7 +69,8 @@ def baseline(ex):
         continue
       if total_cost >= min_cost:
         break
-      total_cost += ex.pickup_cost(driver, passenger_assignment[driver])
+      cost, passenger_assignment[driver] = ex.pickup_cost(driver, passenger_assignment[driver])
+      total_cost += cost
     if total_cost < min_cost:
       min_cost = total_cost
       min_assignment = passenger_assignment
@@ -107,8 +108,8 @@ def output_results(ex, inp_fname, method, min_cost, assignment):
     for i in range(len(assignment)):
       # is a driver
       if (assignment[i] != None):
-        print "{} drives {}".format(i, [i] + assignment[i])
-        out.write("{}: {}\n".format(i, assignment[i]))
+        print "{} drives {}".format(i, assignment[i])
+        out.write(str(assignment[i]) + "\n")
     print "Edge weights:"
     print "\t",
     print "\t".join([ str(item) for item in ex.distances.nodes() ])
