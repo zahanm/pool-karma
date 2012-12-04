@@ -28,7 +28,7 @@ def read_data(fname):
     ex.num_people = ex.num_locations - 1
     ex.locations = [ None ] * ex.num_locations
     ex.people_capacity = [ None ] * ex.num_people
-    ex.pickup_costs = [ {} ] * ex.num_people
+    ex.pickup_costs = [ {} for i in xrange(ex.num_people) ]
     for i in xrange(ex.num_people):
       # people location and capacities
       line = f.next().rstrip()

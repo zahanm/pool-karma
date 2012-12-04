@@ -78,7 +78,6 @@ class Explorer:
     """
     Calculate pickup costs
     """
-
     pass_key = tuple(sorted(passengers))
     if pass_key in self.pickup_costs[driver]:
       # memorization
