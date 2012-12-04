@@ -1,4 +1,6 @@
 import itertools
+import numpy as np
+import math
 
 class Explorer:
   """
@@ -109,3 +111,100 @@ class Explorer:
 
     self.pickup_costs[driver][pass_key] = min_path_cost
     return min_path_cost
+
+  def get_passenger_driver_projection_matrix(self, list_people):
+  """
+  get numpy matrix of passenger x driver
+  each (passenger, driver) value is projection of passenger to driver toward goal
+  """  
+    passengers = filter(lambda p: self.people_capacity[p] <= 0, list_people)
+    drivers = filter(lambda p: self.people_capacity[p] > 0, list_people)
+    passenger_driver_matrix = []
+    list_driver_vectors = [(self.locations[i][0] - self.goal[0], self.locations[i][1] - self.goal[1]) for i in drivers]
+    
+    # for each passenger, calculate a list of projection distance to each driver
+    # as a row in passenger x driver matrix
+    for i in range(len(passengers)):
+      passenger_vector = (self.locations[passengers[i]][0] - self.goal[0], self.locations[passengers[i]][1] - self.goal[1])
+      list_distances = [self.vertical_distance(passenger_vector, driver_vector) for driver_vector in list_driver_vectors]
+      list_projections = [self.projection(passenger_vector, driver_vector) for driver_vector in list_driver_vectors]
+      for j in range(len(list_driver_vectors)):
+        if (list_projections[j] < 0 or list_projections[j] > self.length(list_driver_vectors[j]) or list_distances[j] < 0):
+          list_distances[j] = np.nan
+      passenger_driver_matrix.append(list_distances)
+    
+    return np.array(passenger_driver_matrix)      
+    
+  def get_passenger_driver_index_matrix(self, list_people):
+  """
+  get numpy matrix of passenger x driver *index*
+  each (passenger, driver) value is (index_passenger, index_car)
+  """  
+    passengers = filter(lambda p: self.people_capacity[p] <= 0, list_people)
+    drivers = filter(lambda p: self.people_capacity[p] > 0, list_people)
+    index_matrix = []
+    # for each passenger, make each cell (index_passenger, index_car) for lookup
+    for i in range(len(passengers)):
+      list_index_tuple = [(passengers[i], drivers[j]) for j in range(len(drivers))]
+      passenger_driver_matrix.append(list_index_tuple)
+    
+    return np.array(index_matrix)      
+
+  def get_passenger_driver_distance_matrix(self, list_people):
+  """
+  get numpy matrix of passenger x driver
+  each (passenger, driver) value is projection of passenger to driver toward goal
+  """  
+    passengers = filter(lambda p: self.people_capacity[p] <= 0, list_people)
+    drivers = filter(lambda p: self.people_capacity[p] > 0, list_people)
+    passenger_driver_matrix = []
+    
+    # for each passenger, calculate a list of projection distance to each driver
+    # as a row in passenger x driver matrix
+    for i in passengers:
+      list_distances = [self.euclidean_distance(self.locations[i], self.locations[j]) for j in drivers]
+      passenger_driver_matrix.append(list_distances)
+    
+    return np.array(passenger_driver_matrix)
+    
+  def get_passenger_driver_index_matrix(self):
+  """
+  get numpy matrix of passenger x driver *index*
+  each (passenger, driver) value is (index_passenger, index_car)
+  """  
+    passengers = filter(lambda p: self.people_capacity[p] <= 0, range(self.num_people))
+    drivers = filter(lambda p: self.people_capacity[p] > 0, range(self.num_people))
+    index_matrix = []
+    # for each passenger, make each cell (index_passenger, index_car) for lookup
+    for i in range(len(passengers)):
+      list_index_tuple = [(passengers[i], drivers[j]) for j in range(len(drivers))]
+      passenger_driver_matrix.append(list_index_tuple)
+    
+    return np.array(index_matrix)
+  
+  def euclidean_distance(self, p1, p2):
+  """
+  Euclidean distance between two points
+  """
+    return math.sqrt(sum(math.pow((a - b), 2) for a, b in zip(p1, p2)))
+      
+  def projection(self, v1, v2):
+  """
+  projection of v1 onto v2
+  """
+    return float(v1 * math.cos(self.angle(v1, v2)))
+    
+  def vertical_distance(self, v1, v2):
+  """
+  vertical distance from v1 onto v2
+  """
+    return float(v1 * math.sin(self.angle(v1, v2)))
+    
+  def dotproduct(self, v1, v2):
+    return sum((a*b) for a, b in zip(v1, v2))
+
+  def length(self, v):
+    return math.sqrt(dotproduct(v, v))
+
+  def angle(self, v1, v2):
+    return math.acos(dotproduct(v1, v2) / (length(v1) * length(v2)))

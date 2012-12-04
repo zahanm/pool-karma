@@ -1,7 +1,7 @@
 
 import re
 import sys
-
+import numpy as np
 import networkx as nx
 
 from search import Explorer
@@ -72,6 +72,94 @@ def baseline(ex):
       min_cost = total_cost
       min_assignment = passenger_assignment
   return (min_cost, min_assignment)
+  
+def projectionDistanceBased(ex):
+  """
+  @param ex: Explorer
+  Algorithm based on projection distance
+  """
+  ### pick up passengers on the way ###
+  # create matrix (passenger x driver)
+  projection_matrix = ex.get_passenger_driver_projection_matrix(range(self.num_people))
+  index_matrix = ex.get_passenger_driver_index_matrix(range(self.num_people))
+  
+  # for each global minimum projection, assign passenger to the car
+  # remove passenger row
+  # once the car is filled, remove car column
+  assignment = [ None ] * self.num_people
+  while size(projection_matrix) > 0 and np.nanargmin(projection_matrix) != np.nan:
+    
+    (num_unassign_passengers, num_avail_cars) = projection_matrix.shape
+    min_index = np.nanargmin(projection_matrix)
+    min_index_0 = min_index / num_avail_cars
+    min_index_1 = min_index % num_avail_cars
+    (min_passenger_idx, min_car_idx) = index_matrix[min_index_0][min_index_1]
+    
+    # assign min passenger to min car
+    list_min_car_passengers = assignment[min_car_idx]
+    if (list_min_car_passengers == None):
+      list_min_car_passengers = []
+    list_min_car_passengers.append(min_passenger_idx)
+    if len(list_min_car_passengers) <= self.people_capacity[min_car_idx] - 1:
+      assignment[min_car_idx] = list_min_car_passengers
+    
+    # remove car column if car is full after taking this passenger
+    if (len(list_min_car_passengers) == self.people_capacity[min_car_idx] - 1):
+      projection_matrix.delete(min_index_1, axis=1)
+      index_matrix.delete(min_index_1, axis=1)
+    
+    # remove passenger
+    projection_matrix.delete(min_index_0, axis=0)
+    index_matrix.delete(min_index_0, axis=0)
+  
+  ### for remaining passengers, assign to closest driver ###
+  if size(projection_matrix) > 0:
+  
+    # get a list of people indices
+    list_index_matrix = index_matrix.tolist()
+    list_index_cars = [tuple[1] for tuple in list_index_matrix[0]]
+    list_index_passengers = []
+    for list_index in list_index_matrix:
+      list_index_passengers.append(list_index[0][0])
+    list_people = list_index_cars + list_index_passengers
+    
+    # get distance and index matrices
+    distance_matrix = ex.get_passenger_driver_distance_matrix(list_people)
+    index_matrix = ex.get_passenger_driver_index_matrix(list_people)
+    
+    # for each global minimum distance, assign passenger to car
+    while size(distance_matrix) > 0 and np.nanargmin(distance_matrix) != np.nan:
+    
+      (num_unassign_passengers, num_avail_cars) = distance_matrix.shape
+      min_index = np.nanargmin(distance_matrix)
+      min_index_0 = min_index / num_avail_cars
+      min_index_1 = min_index % num_avail_cars
+      (min_passenger_idx, min_car_idx) = index_matrix[min_index_0][min_index_1]
+    
+      # assign min passenger to min car
+      list_min_car_passengers = assignment[min_car_idx]
+      if (list_min_car_passengers == None):
+        list_min_car_passengers = []
+      list_min_car_passengers.append(min_passenger_idx)
+      if len(list_min_car_passengers) <= self.people_capacity[min_car_idx] - 1:
+        assignment[min_car_idx] = list_min_car_passengers
+    
+      # remove car column if car is full after taking this passenger
+      if (len(list_min_car_passengers) == self.people_capacity[min_car_idx] - 1):
+        distance_matrix.delete(min_index_1, axis=1)
+        index_matrix.delete(min_index_1, axis=1)
+    
+      # remove passenger
+      distance_matrix.delete(min_index_0, axis=0)
+      index_matrix.delete(min_index_0, axis=0)
+      
+  # calculate cost
+  total_cost = 0.0
+  for driver in filter(lambda p: ex.people_capacity[p] > 0, range(ex.num_people)):
+    total_cost += ex.pickup_cost(driver, assignment[driver])
+    
+  return (total_cost, assignment)
+    
 
 algorithms = {
   "baseline": baseline
