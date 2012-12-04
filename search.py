@@ -59,7 +59,7 @@ class Explorer:
     drivers = filter(lambda p: self.people_capacity[p] > 0, range(self.num_people))
     driver_assignments = []
     for d in drivers:
-      driver_assignments.extend( [d] * self.people_capacity[d] )
+      driver_assignments.extend( [d] * (self.people_capacity[d] - 1) )
     if len(driver_assignments) < len(non_drivers):
       raise RuntimeError("Not enough capacity to pickup and take everyone")
     for assignment in itertools.permutations(driver_assignments, r=len(non_drivers)):
@@ -78,7 +78,6 @@ class Explorer:
     """
     Calculate pickup costs
     """
-
     pass_key = tuple(sorted(passengers))
     if pass_key in self.pickup_costs[driver]:
       # memorization
