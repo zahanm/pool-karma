@@ -47,48 +47,57 @@ def gen(args):
                     out.write("{} {} {}\n".format(i, j, dist_i_j))
     print "Written to: {}".format(filename)
 
-def graph(fname):
-  with open(fname) as f:
-    num_locations = int(f.next().strip())
-    xs = np.empty(num_locations, dtype=float)
-    ys = np.empty(num_locations, dtype=float)
-    cats = np.empty(num_locations, dtype='uint8')
-    no_cars_xs, no_cars_ys, cars_xs, cars_ys = [], [], [], []
-    for loc in xrange(num_locations - 1):
-      # people locations
+def graph(data_fname):
+  colors = ["blue", "red", "green", "yellow", "black"]
+  with open(data_fname) as f:
+    cwd = path.dirname(path.abspath(__file__))
+    output_fname = path.join(cwd, "output", path.basename(data_fname))
+    with open(output_fname) as gen_output:
+      num_locations = int(f.next().strip())
+      xs = np.empty(num_locations, dtype=float)
+      ys = np.empty(num_locations, dtype=float)
+      cats = np.empty(num_locations, dtype='uint8')
+      for loc in xrange(num_locations - 1):
+        # people locations
+        line = f.next().rstrip()
+        m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)\s+(\d+)", line)
+        xs[loc] = float(m.group(1))
+        ys[loc] = float(m.group(3))
+        cats[loc] = 1 if int(m.group(5)) > 0 else 2
+      # goal
       line = f.next().rstrip()
-      m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)\s+(\d+)", line)
-      xs[loc] = float(m.group(1))
-      ys[loc] = float(m.group(3))
-      cats[loc] = 1 if int(m.group(5)) > 0 else 2
-    # goal
-    line = f.next().rstrip()
-    m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)", line)
-    loc = num_locations - 1
-    xs[loc] = float(m.group(1))
-    ys[loc] = float(m.group(3))
-    cats[loc] = 3
-    print "Plotting: {}".format([-0.5, np.max(xs) + 0.5, -0.5, np.max(ys) + 0.5])
-    plt.axis([-0.5, np.max(xs) + 0.5, -0.5, np.max(ys) + 0.5])
-    for i, (x, y) in enumerate(itertools.izip(xs, ys)):
-      if cats[i] == 1:
-        color = "blue"
-      elif cats[i] == 2:
-        color = "red"
+      m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)", line)
+      goal = num_locations - 1
+      xs[goal] = float(m.group(1))
+      ys[goal] = float(m.group(3))
+      cats[goal] = 3
+      print "Plotting: {}".format([-0.5, np.max(xs) + 0.5, -0.5, np.max(ys) + 0.5])
+      plt.axis([-0.5, np.max(xs) + 0.5, -0.5, np.max(ys) + 0.5])
+      for i, (x, y) in enumerate(itertools.izip(xs, ys)):
+        if cats[i] == 1:
+          color = colors[0]
+        elif cats[i] == 2:
+          color = colors[1]
+        else:
+          color = colors[2]
+        plt.text(x, y, str(i), color=color)
+      # plot paths of drivers
+      for i, line in enumerate(gen_output):
+        stops = line.rstrip()
+        route = [ int(p.group()) for p in re.finditer(r"\d+", stops) ]
+        route += [ goal ]
+        plt.plot(xs[route], ys[route], color=colors[ i % len(colors) ])
+      # old plotting code
+      # plt.plot(xs[ cats == 1 ], ys[ cats == 1 ], "bo")
+      # plt.plot(xs[ cats == 2 ], ys[ cats == 2 ], "ro")
+      # plt.plot(xs[ cats == 3 ], ys[ cats == 3 ], "yo")
+      if sys.argv[1] == "show":
+        plt.show()
       else:
-        color = "green"
-      plt.text(x, y, str(i), color=color)
-    # old plotting code
-    # plt.plot(xs[ cats == 1 ], ys[ cats == 1 ], "bo")
-    # plt.plot(xs[ cats == 2 ], ys[ cats == 2 ], "ro")
-    # plt.plot(xs[ cats == 3 ], ys[ cats == 3 ], "yo")
-    if sys.argv[1] == "show":
-      plt.show()
-    else:
-      wd = path.dirname(path.abspath(__file__))
-      if not path.exists(path.join(wd, 'plots')):
-        os.mkdir(path.join(wd, 'plots'))
-      plt.savefig(path.join(wd, 'plots', path.splitext(path.basename(fname))[0] + '.png'))
+        cwd = path.dirname(path.abspath(__file__))
+        if not path.exists(path.join(cwd, 'plots')):
+          os.mkdir(path.join(cwd, 'plots'))
+        plt.savefig(path.join(cwd, 'plots', path.splitext(path.basename(data_fname))[0] + '.png'))
 
 def dist(a,b):
     dist = ((a[0]-b[0])**2 + (a[1]-b[1])**2)**0.5
@@ -102,6 +111,6 @@ if __name__ == '__main__':
   else:
     print "usage {} <gen|graph>".format(__file__)
     print "usage: {} gen <numPeople> <numCars> <worldWidth> <worldHeight>".format(__file__)
-    print "usage: {} show <filename>".format(__file__)
-    print "usage: {} graph <filename>".format(__file__)
+    print "usage: {} show <data file> <generated output>".format(__file__)
+    print "usage: {} graph <data file> <generated output>".format(__file__)
     sys.exit(1)

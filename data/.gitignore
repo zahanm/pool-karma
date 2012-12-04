@@ -1,3 +1,5 @@
 
-generated_*.txt
+generated*.txt
+.R*
+
 

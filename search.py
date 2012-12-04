@@ -80,7 +80,6 @@ class Explorer:
     """
     Calculate pickup costs
     """
-
     pass_key = tuple(sorted(passengers))
     if pass_key in self.pickup_costs[driver]:
       # memorization
@@ -109,6 +108,7 @@ class Explorer:
         min_path = path
     print "=> Cost: {:.4}".format(min_path_cost)
 
+<<<<<<< HEAD
     self.pickup_costs[driver][pass_key] = min_path_cost
     return min_path_cost
 
@@ -208,3 +208,7 @@ class Explorer:
 
   def angle(self, v1, v2):
     return math.acos(dotproduct(v1, v2) / (length(v1) * length(v2)))
+=======
+    self.pickup_costs[driver][pass_key] = (min_path_cost, min_path)
+    return (min_path_cost, min_path)
+>>>>>>> 34bc65e790e1395d9d643b9363ae052b7fd9de4f
