@@ -111,10 +111,10 @@ class Explorer:
     return (min_path_cost, min_path)
 
   def get_passenger_driver_projection_matrix(self, list_people):
-  """
-  get numpy matrix of passenger x driver
-  each (passenger, driver) value is projection of passenger to driver toward goal
-  """
+    """
+    get numpy matrix of passenger x driver
+    each (passenger, driver) value is projection of passenger to driver toward goal
+    """
     passengers = filter(lambda p: self.people_capacity[p] <= 0, list_people)
     drivers = filter(lambda p: self.people_capacity[p] > 0, list_people)
     passenger_driver_matrix = []
@@ -130,14 +130,13 @@ class Explorer:
         if (list_projections[j] < 0 or list_projections[j] > self.length(list_driver_vectors[j]) or list_distances[j] < 0):
           list_distances[j] = np.nan
       passenger_driver_matrix.append(list_distances)
-
     return np.array(passenger_driver_matrix)
 
   def get_passenger_driver_index_matrix(self, list_people):
-  """
-  get numpy matrix of passenger x driver *index*
-  each (passenger, driver) value is (index_passenger, index_car)
-  """
+    """
+    get numpy matrix of passenger x driver *index*
+    each (passenger, driver) value is (index_passenger, index_car)
+    """
     passengers = filter(lambda p: self.people_capacity[p] <= 0, list_people)
     drivers = filter(lambda p: self.people_capacity[p] > 0, list_people)
     index_matrix = []
@@ -149,10 +148,10 @@ class Explorer:
     return np.array(index_matrix)
 
   def get_passenger_driver_distance_matrix(self, list_people):
-  """
-  get numpy matrix of passenger x driver
-  each (passenger, driver) value is projection of passenger to driver toward goal
-  """
+    """
+    get numpy matrix of passenger x driver
+    each (passenger, driver) value is projection of passenger to driver toward goal
+    """
     passengers = filter(lambda p: self.people_capacity[p] <= 0, list_people)
     drivers = filter(lambda p: self.people_capacity[p] > 0, list_people)
     passenger_driver_matrix = []
@@ -166,10 +165,10 @@ class Explorer:
     return np.array(passenger_driver_matrix)
 
   def get_passenger_driver_index_matrix(self):
-  """
-  get numpy matrix of passenger x driver *index*
-  each (passenger, driver) value is (index_passenger, index_car)
-  """
+    """
+    get numpy matrix of passenger x driver *index*
+    each (passenger, driver) value is (index_passenger, index_car)
+    """
     passengers = filter(lambda p: self.people_capacity[p] <= 0, range(self.num_people))
     drivers = filter(lambda p: self.people_capacity[p] > 0, range(self.num_people))
     index_matrix = []
@@ -181,21 +180,21 @@ class Explorer:
     return np.array(index_matrix)
 
   def euclidean_distance(self, p1, p2):
-  """
-  Euclidean distance between two points
-  """
+    """
+    Euclidean distance between two points
+    """
     return math.sqrt(sum(math.pow((a - b), 2) for a, b in zip(p1, p2)))
 
   def projection(self, v1, v2):
-  """
-  projection of v1 onto v2
-  """
+    """
+    projection of v1 onto v2
+    """
     return float(v1 * math.cos(self.angle(v1, v2)))
 
   def vertical_distance(self, v1, v2):
-  """
-  vertical distance from v1 onto v2
-  """
+    """
+    vertical distance from v1 onto v2
+    """
     return float(v1 * math.sin(self.angle(v1, v2)))
 
   def dotproduct(self, v1, v2):

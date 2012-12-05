@@ -191,7 +191,7 @@ def output_results(ex, inp_fname, method, min_cost, assignment):
       print
 
 algorithms = {
-  "baseline": baseline
+  "baseline": baseline,
   "projection": projectionDistanceBased
 }
 
