@@ -93,28 +93,33 @@ def agglomerative(ex):
   first_i = -1
   distance_matrix =np.matrix()
   assignments = {}
+  # initialize dictionary of assignments
   for(car_person in people_with_cars):
     assignments[car_person] = []
+  
+  #initialize matrix of distances between non-car people to car people
   for(i in people_with_cars):
     person_dist = []
     row_names.append(i)
     if(first_i == -1):
         first_i=i
     for(j in people_without_cars):
-        if (i==first_i):
-            col_names.append(j)
-        person_dist.append(ex.distances[i][j])
+      if (i==first_i):
+        col_names.append(j)
+      person_dist.append(ex.distances[i][j])
     np.append(distance_matrix,person_dist, axis=0)
-
+  
+  # while there is an unassigned non-car person, assign the person with minimum distance to a car with space. Then recenter the location of that car.
+  while(col_names.len>0):
     min_row = np.unravel_index(np.argmin(distance_matrix), np.shape(distance_matrix))[0]
     min_col = np.unravel_index(np.argmin(distance_matrix), np.shape(distance_matrix))[1]
 
     assignments[row_names(min_row)].append(col_names(min_col))
     np.delete(distance_matrix, min_col,1)
     min_col.remove[col_names(min_col)]
-    #if(assignments[row_names(min_row)].len>= cap -1):
-        #np.delete(distance_matrix, min_row,0)
-        #min_row.remove[row_names(min_row)]
+    if(assignments[row_names(min_row)].len >= (ex.capacity[row_names(min_row)] - 1):
+      np.delete(distance_matrix, min_row,0)
+      min_row.remove[row_names(min_row)]
 
 
 
