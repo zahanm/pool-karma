@@ -181,7 +181,8 @@ def output_results(ex, inp_fname, method, min_cost, assignment):
   output_folder = path.join(cwd, "output")
   if not path.exists(output_folder):
     os.mkdir(output_folder)
-  with open(path.join(output_folder, path.basename(inp_fname)), "w") as out:
+  output_fname = method + "_" + path.basename(inp_fname)
+  with open(path.join(output_folder, output_fname), "w") as out:
     print "Minimum cost: {:.4}".format(min_cost)
     print 'Minimum assignment: '
     for i in range(len(assignment)):
