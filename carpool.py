@@ -86,13 +86,13 @@ def projectionDistanceBased(ex):
   # create matrix (passenger x driver)
   projection_matrix = ex.get_passenger_driver_projection_matrix(range(ex.num_people))
   index_matrix = ex.get_passenger_driver_index_matrix(range(ex.num_people))
-  
+
   # for each global minimum projection, assign passenger to the car
   # remove passenger row
   # once the car is filled, remove car column
   assignment = [ None ] * ex.num_people
   while np.size(projection_matrix) > 0 and np.nanargmin(projection_matrix) != np.nan:
-    
+
     (num_unassign_passengers, num_avail_cars) = projection_matrix.shape
     min_index = np.nanargmin(projection_matrix)
     min_index_0 = min_index / num_avail_cars
