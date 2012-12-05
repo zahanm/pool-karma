@@ -172,6 +172,7 @@ def projectionDistanceBased(ex):
     if assignment[driver] == None:
       assignment[driver] = []
     total_cost += ex.pickup_cost(driver, assignment[driver])[0]
+    assignment[driver] = ex.pickup_cost(driver, assignment[driver])[1]
     
   return (total_cost, assignment)
 
