@@ -120,9 +120,13 @@ def agglomerative(ex):
   while len(col_names) > 0:
     min_row = np.unravel_index(np.argmin(distance_matrix), np.shape(distance_matrix))[0]
     min_col = np.unravel_index(np.argmin(distance_matrix), np.shape(distance_matrix))[1]
-    print "min_row: "
+    print "min_car: "
+    print row_names[min_row]
+    print "min_row"
     print min_row
-    print "min_col:"
+    print "min_non_car:"
+    print col_names[min_col]
+    print "min_col"
     print min_col
     min_car = row_names[min_row]
     assignments_dict[min_car].append(col_names[min_col])
@@ -143,7 +147,7 @@ def agglomerative(ex):
       centroid_y = centroid_y/(len(ex.locations[person])+1)
       new_row_dist=[]
       for person in col_names:
-        new_row_dist.append(((ex.locations[person][0]-centroid_x)**2+(ex.locations[person][0]-centroid_x)**2)**0.5)
+        new_row_dist.append(((ex.locations[person][0]-centroid_x)**2+(ex.locations[person][0]-centroid_y)**2)**0.5)
       print "new_row_dist: "
       print new_row_dist
       print "\n"
