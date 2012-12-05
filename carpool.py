@@ -134,18 +134,24 @@ def projectionDistanceBased(ex):
   # create matrix (passenger x driver)
   projection_matrix = ex.get_passenger_driver_projection_matrix(range(ex.num_people))
   index_matrix = ex.get_passenger_driver_index_matrix(range(ex.num_people))
-
+  
+  print projection_matrix
+  print index_matrix
+  
   # for each global minimum projection, assign passenger to the car
   # remove passenger row
   # once the car is filled, remove car column
   assignment = [ None ] * ex.num_people
-  while size(projection_matrix) > 0 and np.nanargmin(projection_matrix) != np.nan:
+  while np.size(projection_matrix) > 0 and not np.isnan(np.nanmin(projection_matrix)):
 
     (num_unassign_passengers, num_avail_cars) = projection_matrix.shape
     min_index = np.nanargmin(projection_matrix)
     min_index_0 = min_index / num_avail_cars
     min_index_1 = min_index % num_avail_cars
     (min_passenger_idx, min_car_idx) = index_matrix[min_index_0][min_index_1]
+
+    print projection_matrix
+    print 'min: %s at (%s, %s)' % (str(np.nanmin(projection_matrix)), str(min_index_0), str(min_index_1))
 
     # assign min passenger to min car
     list_min_car_passengers = assignment[min_car_idx]
@@ -157,15 +163,15 @@ def projectionDistanceBased(ex):
 
     # remove car column if car is full after taking this passenger
     if (len(list_min_car_passengers) == ex.people_capacity[min_car_idx] - 1):
-      projection_matrix.delete(min_index_1, axis=1)
-      index_matrix.delete(min_index_1, axis=1)
+      projection_matrix = np.delete(projection_matrix, min_index_1, axis=1)
+      index_matrix = np.delete(index_matrix, min_index_1, axis=1)
 
     # remove passenger
-    projection_matrix.delete(min_index_0, axis=0)
-    index_matrix.delete(min_index_0, axis=0)
+    projection_matrix = np.delete(projection_matrix, min_index_0, axis=0)
+    index_matrix = np.delete(index_matrix, min_index_0, axis=0)
 
   ### for remaining passengers, assign to closest driver ###
-  if size(projection_matrix) > 0:
+  if np.size(projection_matrix) > 0:
 
     # get a list of people indices
     list_index_matrix = index_matrix.tolist()
@@ -180,7 +186,7 @@ def projectionDistanceBased(ex):
     index_matrix = ex.get_passenger_driver_index_matrix(list_people)
 
     # for each global minimum distance, assign passenger to car
-    while size(distance_matrix) > 0 and np.nanargmin(distance_matrix) != np.nan:
+    while np.size(distance_matrix) > 0 and not np.isnan(np.nanmin(distance_matrix)):
 
       (num_unassign_passengers, num_avail_cars) = distance_matrix.shape
       min_index = np.nanargmin(distance_matrix)
@@ -198,18 +204,24 @@ def projectionDistanceBased(ex):
 
       # remove car column if car is full after taking this passenger
       if (len(list_min_car_passengers) == ex.people_capacity[min_car_idx] - 1):
-        distance_matrix.delete(min_index_1, axis=1)
-        index_matrix.delete(min_index_1, axis=1)
+        distance_matrix = np.delete(distance_matrix, min_index_1, axis=1)
+        index_matrix = np.delete(index_matrix, min_index_1, axis=1)
 
       # remove passenger
-      distance_matrix.delete(min_index_0, axis=0)
-      index_matrix.delete(min_index_0, axis=0)
+      distance_matrix = np.delete(distance_matrix, min_index_0, axis=0)
+      index_matrix = np.delete(index_matrix, min_index_0, axis=0)
+
+  print 'assignment:'
+  print assignment
 
   # calculate cost
   total_cost = 0.0
   for driver in filter(lambda p: ex.people_capacity[p] > 0, range(ex.num_people)):
-    total_cost += ex.pickup_cost(driver, assignment[driver])
-
+    if assignment[driver] == None:
+      assignment[driver] = []
+    total_cost += ex.pickup_cost(driver, assignment[driver])[0]
+    assignment[driver] = ex.pickup_cost(driver, assignment[driver])[1]
+    
   return (total_cost, assignment)
 
 def output_results(ex, inp_fname, method, min_cost, assignment):
@@ -218,7 +230,8 @@ def output_results(ex, inp_fname, method, min_cost, assignment):
   output_folder = path.join(cwd, "output")
   if not path.exists(output_folder):
     os.mkdir(output_folder)
-  with open(path.join(output_folder, path.basename(inp_fname)), "w") as out:
+  output_fname = method + "_" + path.basename(inp_fname)
+  with open(path.join(output_folder, output_fname), "w") as out:
     print "Minimum cost: {:.4}".format(min_cost)
     print 'Minimum assignment: '
     for i in range(len(assignment)):
