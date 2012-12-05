@@ -122,6 +122,8 @@ def plot_locations(xs, ys, cats):
     else:
       color = colors[2]
     plt.text(x, y, str(i), color=color)
+  plt.xlabel("x")
+  plt.ylabel("y")
 
 def graph(data_fname):
   with open(data_fname) as f:
@@ -148,11 +150,14 @@ def graph(data_fname):
     cwd = path.dirname(path.abspath(__file__))
     output_folder = path.join(cwd, "output")
     generated_fname_glob = "*_" + path.basename(data_fname)
+    data_gen_algorithm = path.basename(data_fname).split("_")[0]
+    data_gen_algorithm = data_gen_algorithm[:1].upper() + data_gen_algorithm[1:]
     print generated_fname_glob
     output_fnames = glob(path.join(output_folder, generated_fname_glob))
     if len(output_fnames) == 0:
       # no paths to plot
       plot_locations(xs, ys, cats)
+      plt.title(data_gen_algorithm + " data")
       if sys.argv[1] == "show":
         plt.show()
       else:
@@ -162,9 +167,15 @@ def graph(data_fname):
         plt.savefig(path.join(cwd, 'plots', path.splitext(path.basename(data_fname))[0] + '.png'))
       return
     for output in output_fnames:
+      print output
+      solver_algorithm = path.basename(output).split("_")[0]
+      solver_algorithm = solver_algorithm[:1].upper() + solver_algorithm[1:]
       # plot paths of drivers
       with open(output) as generated_output:
         plot_locations(xs, ys, cats)
+        plt.title(solver_algorithm + ": " + data_gen_algorithm + " data")
+        min_cost = float(generated_output.next())
+        plt.legend([ "Total cost of paths: ".format(min_cost) ], loc="best")
         for i, line in enumerate(generated_output):
           stops = line.rstrip()
           route = [ int(p.group()) for p in re.finditer(r"\d+", stops) ]
