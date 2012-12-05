@@ -155,7 +155,7 @@ def graph(data_fname):
     print generated_fname_glob
     # plot just the data
     plot_locations(xs, ys, cats)
-    plt.title(data_gen_algorithm + " data")
+    plt.title("Data: " + data_gen_algorithm)
     if sys.argv[1] == "show":
       plt.show()
     else:
@@ -172,7 +172,8 @@ def graph(data_fname):
       with open(output) as generated_output:
         plot_locations(xs, ys, cats)
         min_cost = float(generated_output.next())
-        title = solver_algorithm + " algorithm: " + data_gen_algorithm + " data"
+        title = "Data: " + data_gen_algorithm
+        title += " | Algorithm: " + solver_algorithm
         title += " | Total cost: {:.4}".format(min_cost)
         plt.title(title)
         for i, line in enumerate(generated_output):
