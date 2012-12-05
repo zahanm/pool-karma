@@ -9,43 +9,62 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 
+def uniform(out, numPeople, numCars, width, height):
+  """
+  Uniform generation
+  """
+  #G=nx.Graph()
+  nodes = []
+  carNodes = random.sample(range(numPeople), numCars)
+
+  out.write("{}\n".format( numPeople + 1 ))
+  for i in xrange(numPeople + 1):
+    x = random.uniform(0, width)
+    y = random.uniform(0, height)
+    l = (x, y)
+    nodes.append(l)
+    #G.add_nodes(i)
+    if i == numPeople:
+      # goal location
+      out.write ("{} {}\n".format(x, y))
+      break
+    # people locations
+    if (i in carNodes):
+      out.write ("{} {} {}\n".format(x, y, 4))
+    else:
+      out.write ("{} {} {}\n".format(x, y, 0))
+
+  for i in range(len(nodes)):
+    for j in range(len(nodes)):
+      if i < j:
+        dist_i_j = dist(nodes[i], nodes[j])
+        #G.add_edge(i, j, weight=dist_i_j)
+        out.write("{} {} {}\n".format(i, j, dist_i_j))
+
+algorithms = {
+  "uniform": uniform
+}
+
 # generate random locations for people and goal state
 def gen(args):
-    numPeople = int(args[1])
-    numCars = int(args[2])
-    width = float(args[3])
-    height = float(args[4])
+  """
+  Generate map using model, numPeople and numCars specified
+  """
+  model = args[1]
+  numPeople = int(args[2])
+  numCars = int(args[3])
+  width = 10.0
+  height = 10.0
 
-    #G=nx.Graph()
-    nodes = []
-    carNodes = random.sample(range(numPeople), numCars)
-    filename = "data/generated_{}_{}_{}_{}.txt".format(numPeople, numCars, int(width), int(height))
-    with open(filename, "w") as out:
+  if model not in algorithms:
+    print "{} is not a valid model".format(model)
+    sys.exit(1)
 
-        out.write("{}\n".format( numPeople + 1 ))
-        for i in xrange(numPeople + 1):
-            x = random.uniform(0, width)
-            y = random.uniform(0, height)
+  filename = "data/generated_{}_{}_{}.txt".format(model, numPeople, numCars)
+  with open(filename, "w") as out:
+    algorithms[model](out, numPeople, numCars, width, height)
 
-            l = x, y
-            nodes.append(l)
-            #G.add_nodes(i)
-
-            if i == numPeople:
-                out.write ("{} {}\n".format(x, y))
-                break
-            if (i in carNodes):
-                out.write ("{} {} {}\n".format(x, y, 4))
-            else:
-                out.write ("{} {} {}\n".format(x, y, 0))
-
-        for i in range(len(nodes)):
-            for j in range(len(nodes)):
-                if i < j:
-                    dist_i_j = dist(nodes[i], nodes[j])
-                    #G.add_edge(i, j, weight=dist_i_j)
-                    out.write("{} {} {}\n".format(i, j, dist_i_j))
-    print "Written to: {}".format(filename)
+  print "Written to: {}".format(filename)
 
 def graph(data_fname):
   colors = ["blue", "red", "green", "yellow", "black"]
@@ -104,13 +123,13 @@ def dist(a,b):
     return dist
 
 if __name__ == '__main__':
-  if len(sys.argv) == 6:
+  if len(sys.argv) == 5:
     gen(sys.argv[1:])
   elif len(sys.argv) == 3:
     graph(sys.argv[2])
   else:
     print "usage {} <gen|graph>".format(__file__)
-    print "usage: {} gen <numPeople> <numCars> <worldWidth> <worldHeight>".format(__file__)
+    print "usage: {} gen <model> <numPeople> <numCars>".format(__file__)
     print "usage: {} show <data file> <generated output>".format(__file__)
     print "usage: {} graph <data file> <generated output>".format(__file__)
     sys.exit(1)
