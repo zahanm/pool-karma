@@ -109,10 +109,13 @@ def agglomerative(ex):
     min_row = np.unravel_index(np.argmin(distance_matrix), np.shape(distance_matrix))[0]
     min_col = np.unravel_index(np.argmin(distance_matrix), np.shape(distance_matrix))[1]
 
-    assignments[col_names(min_col)].append(row_names(min_row))
-
-    if(num assignments is cap -1)
-        remove column
+    assignments[row_names(min_row)].append(col_names(min_col))
+    np.delete(distance_matrix, min_col,1)
+    min_col.remove[col_names(min_col)]
+    #if(assignments[row_names(min_row)].len>= cap -1):
+        #np.delete(distance_matrix, min_row,0)
+        #min_row.remove[row_names(min_row)]
+    
 
 
 
