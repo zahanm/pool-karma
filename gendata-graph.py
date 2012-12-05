@@ -5,6 +5,7 @@ import re
 import itertools
 import os
 import os.path as path
+from glob import glob
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
@@ -108,15 +109,22 @@ def gen(args):
 
   print "Written to: {}".format(filename)
 
-def graph(data_fname):
-  colors = ["blue", "red", "green", "yellow", "black"]
-  with open(data_fname) as f:
-    cwd = path.dirname(path.abspath(__file__))
-    output_fname = path.join(cwd, "output", path.basename(data_fname))
-    if path.exists(output_fname):
-      gen_output = open(output_fname)
+colors = ["blue", "red", "green", "yellow", "black"]
+
+def plot_locations(xs, ys, cats):
+  print "Plotting: {}".format([-0.5, np.max(xs) + 0.5, -0.5, np.max(ys) + 0.5])
+  plt.axis([-0.5, np.max(xs) + 0.5, -0.5, np.max(ys) + 0.5])
+  for i, (x, y) in enumerate(itertools.izip(xs, ys)):
+    if cats[i] == 1:
+      color = colors[0]
+    elif cats[i] == 2:
+      color = colors[1]
     else:
-      gen_output = None
+      color = colors[2]
+    plt.text(x, y, str(i), color=color)
+
+def graph(data_fname):
+  with open(data_fname) as f:
     num_locations = int(f.next().strip())
     xs = np.empty(num_locations, dtype=float)
     ys = np.empty(num_locations, dtype=float)
@@ -135,34 +143,45 @@ def graph(data_fname):
     xs[goal] = float(m.group(1))
     ys[goal] = float(m.group(3))
     cats[goal] = 3
-    print "Plotting: {}".format([-0.5, np.max(xs) + 0.5, -0.5, np.max(ys) + 0.5])
-    plt.axis([-0.5, np.max(xs) + 0.5, -0.5, np.max(ys) + 0.5])
-    for i, (x, y) in enumerate(itertools.izip(xs, ys)):
-      if cats[i] == 1:
-        color = colors[0]
-      elif cats[i] == 2:
-        color = colors[1]
+
+    # are there any output files?
+    cwd = path.dirname(path.abspath(__file__))
+    output_folder = path.join(cwd, "output")
+    generated_fname_glob = "*_" + path.basename(data_fname)
+    print generated_fname_glob
+    output_fnames = glob(path.join(output_folder, generated_fname_glob))
+    if len(output_fnames) == 0:
+      # no paths to plot
+      plot_locations(xs, ys, cats)
+      if sys.argv[1] == "show":
+        plt.show()
       else:
-        color = colors[2]
-      plt.text(x, y, str(i), color=color)
-    if gen_output:
+        cwd = path.dirname(path.abspath(__file__))
+        if not path.exists(path.join(cwd, 'plots')):
+          os.mkdir(path.join(cwd, 'plots'))
+        plt.savefig(path.join(cwd, 'plots', path.splitext(path.basename(data_fname))[0] + '.png'))
+      return
+    for output in output_fnames:
       # plot paths of drivers
-      for i, line in enumerate(gen_output):
-        stops = line.rstrip()
-        route = [ int(p.group()) for p in re.finditer(r"\d+", stops) ]
-        route += [ goal ]
-        plt.plot(xs[route], ys[route], color=colors[ i % len(colors) ])
+      with open(output) as generated_output:
+        plot_locations(xs, ys, cats)
+        for i, line in enumerate(generated_output):
+          stops = line.rstrip()
+          route = [ int(p.group()) for p in re.finditer(r"\d+", stops) ]
+          route += [ goal ]
+          plt.plot(xs[route], ys[route], color=colors[ i % len(colors) ])
+        if sys.argv[1] == "show":
+          plt.show()
+        else:
+          cwd = path.dirname(path.abspath(__file__))
+          if not path.exists(path.join(cwd, 'plots')):
+            os.mkdir(path.join(cwd, 'plots'))
+          plt.savefig(path.join(cwd, 'plots', path.splitext(path.basename(output))[0] + '.png'))
+        plt.clf()
     # old plotting code
     # plt.plot(xs[ cats == 1 ], ys[ cats == 1 ], "bo")
     # plt.plot(xs[ cats == 2 ], ys[ cats == 2 ], "ro")
     # plt.plot(xs[ cats == 3 ], ys[ cats == 3 ], "yo")
-    if sys.argv[1] == "show":
-      plt.show()
-    else:
-      cwd = path.dirname(path.abspath(__file__))
-      if not path.exists(path.join(cwd, 'plots')):
-        os.mkdir(path.join(cwd, 'plots'))
-      plt.savefig(path.join(cwd, 'plots', path.splitext(path.basename(data_fname))[0] + '.png'))
 
 if __name__ == '__main__':
   if len(sys.argv) == 5:
