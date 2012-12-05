@@ -95,9 +95,10 @@ def agglomerative(ex):
   distance_array = []
   assignments_dict = {}
   # initialize dictionary of assignments_dict
+  #car_centroids = {}
   for car_person in people_with_cars:
     assignments_dict[car_person] = []
-
+    #car_centroids[car_person] = ex.locations[car_person]
   #initialize matrix of distances between non-car people to car people
   for i in people_with_cars:
     person_dist = []
@@ -139,15 +140,23 @@ def agglomerative(ex):
       del row_names[min_row]
     #change the location of the car to be centroid of all people assigned to it and recompute distances for that row
     else:
+      print "car loc"
+      print ex.locations[min_car]
       centroid_x, centroid_y = ex.locations[min_car]
       for person in assignments_dict[min_car]:
+        print "person"
+        print person
+        print "non_car loc"
+        print ex.locations[person]
         centroid_x += ex.locations[person][0]
         centroid_y += ex.locations[person][1]
-      centroid_x = centroid_x/(len(ex.locations[person])+1)
-      centroid_y = centroid_y/(len(ex.locations[person])+1)
+      centroid_x = centroid_x/(len(assignments_dict[min_car])+1)
+      centroid_y = centroid_y/(len(assignments_dict[min_car])+1)
+      print "centroid loc"
+      print centroid_x, centroid_y
       new_row_dist=[]
       for person in col_names:
-        new_row_dist.append(((ex.locations[person][0]-centroid_x)**2+(ex.locations[person][0]-centroid_y)**2)**0.5)
+        new_row_dist.append(((ex.locations[person][0]-centroid_x)**2+(ex.locations[person][1]-centroid_y)**2)**0.5)
       print "new_row_dist: "
       print new_row_dist
       print "\n"
