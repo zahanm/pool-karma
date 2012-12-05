@@ -41,8 +41,37 @@ def uniform(out, numPeople, numCars, width, height):
         #G.add_edge(i, j, weight=dist_i_j)
         out.write("{} {} {}\n".format(i, j, dist_i_j))
 
+def clustered(out, numPeople, numCars, width, height):
+  """
+  Passengers clustered around each of the drivers
+  """
+  nodes = []
+  drivers = [ None ] * numCars
+  out.write("{}\n".format( numPeople + 1 ))
+  # pick drivers locations uniformly
+  for i in xrange(numCars):
+    x = random.uniform(0, width)
+    y = random.uniform(0, height)
+    drivers[i] = (x,y)
+    nodes.append( drivers[i] )
+    out.write("{} {} {}\n".format(x, y, 4))
+  for i in xrange(numPeople - numCars):
+    center = random.choice(drivers)
+    x = random.gauss(center[0], 1.0)
+    y = random.gauss(center[1], 1.0)
+    nodes.append( (x,y) )
+    out.write("{} {} {}\n".format(x, y, 0))
+  for i, origin in enumerate(nodes):
+    for j, dest in enumerate(nodes):
+      out.write("{} {} {}\n".format(i, j, dist(origin, dest)))
+
+def dist(a,b):
+  dist = ((a[0]-b[0])**2 + (a[1]-b[1])**2)**0.5
+  return dist
+
 algorithms = {
-  "uniform": uniform
+  "uniform": uniform,
+  "clustered": clustered
 }
 
 # generate random locations for people and goal state
@@ -117,10 +146,6 @@ def graph(data_fname):
         if not path.exists(path.join(cwd, 'plots')):
           os.mkdir(path.join(cwd, 'plots'))
         plt.savefig(path.join(cwd, 'plots', path.splitext(path.basename(data_fname))[0] + '.png'))
-
-def dist(a,b):
-    dist = ((a[0]-b[0])**2 + (a[1]-b[1])**2)**0.5
-    return dist
 
 if __name__ == '__main__':
   if len(sys.argv) == 5:
