@@ -1,13 +1,10 @@
 
 import re
 import sys
-<<<<<<< HEAD
 import numpy as np
-=======
 import os
 import os.path as path
 
->>>>>>> 34bc65e790e1395d9d643b9363ae052b7fd9de4f
 import networkx as nx
 
 from search import Explorer
@@ -87,14 +84,14 @@ def projectionDistanceBased(ex):
   """
   ### pick up passengers on the way ###
   # create matrix (passenger x driver)
-  projection_matrix = ex.get_passenger_driver_projection_matrix(range(self.num_people))
-  index_matrix = ex.get_passenger_driver_index_matrix(range(self.num_people))
+  projection_matrix = ex.get_passenger_driver_projection_matrix(range(ex.num_people))
+  index_matrix = ex.get_passenger_driver_index_matrix(range(ex.num_people))
   
   # for each global minimum projection, assign passenger to the car
   # remove passenger row
   # once the car is filled, remove car column
-  assignment = [ None ] * self.num_people
-  while size(projection_matrix) > 0 and np.nanargmin(projection_matrix) != np.nan:
+  assignment = [ None ] * ex.num_people
+  while np.size(projection_matrix) > 0 and np.nanargmin(projection_matrix) != np.nan:
     
     (num_unassign_passengers, num_avail_cars) = projection_matrix.shape
     min_index = np.nanargmin(projection_matrix)
@@ -107,11 +104,11 @@ def projectionDistanceBased(ex):
     if (list_min_car_passengers == None):
       list_min_car_passengers = []
     list_min_car_passengers.append(min_passenger_idx)
-    if len(list_min_car_passengers) <= self.people_capacity[min_car_idx] - 1:
+    if len(list_min_car_passengers) <= ex.people_capacity[min_car_idx] - 1:
       assignment[min_car_idx] = list_min_car_passengers
     
     # remove car column if car is full after taking this passenger
-    if (len(list_min_car_passengers) == self.people_capacity[min_car_idx] - 1):
+    if (len(list_min_car_passengers) == ex.people_capacity[min_car_idx] - 1):
       projection_matrix.delete(min_index_1, axis=1)
       index_matrix.delete(min_index_1, axis=1)
     
@@ -148,11 +145,11 @@ def projectionDistanceBased(ex):
       if (list_min_car_passengers == None):
         list_min_car_passengers = []
       list_min_car_passengers.append(min_passenger_idx)
-      if len(list_min_car_passengers) <= self.people_capacity[min_car_idx] - 1:
+      if len(list_min_car_passengers) <= ex.people_capacity[min_car_idx] - 1:
         assignment[min_car_idx] = list_min_car_passengers
     
       # remove car column if car is full after taking this passenger
-      if (len(list_min_car_passengers) == self.people_capacity[min_car_idx] - 1):
+      if (len(list_min_car_passengers) == ex.people_capacity[min_car_idx] - 1):
         distance_matrix.delete(min_index_1, axis=1)
         index_matrix.delete(min_index_1, axis=1)
     
@@ -169,7 +166,7 @@ def projectionDistanceBased(ex):
     
 
 algorithms = {
-  "baseline": baseline
+  "baseline": baseline,
   "projection": projectionDistanceBased
 }
 

@@ -108,15 +108,14 @@ class Explorer:
         min_path = path
     print "=> Cost: {:.4}".format(min_path_cost)
 
-<<<<<<< HEAD
-    self.pickup_costs[driver][pass_key] = min_path_cost
-    return min_path_cost
+    self.pickup_costs[driver][pass_key] = (min_path_cost, min_path)
+    return (min_path_cost, min_path)
 
   def get_passenger_driver_projection_matrix(self, list_people):
-  """
-  get numpy matrix of passenger x driver
-  each (passenger, driver) value is projection of passenger to driver toward goal
-  """  
+    """
+    get numpy matrix of passenger x driver
+    each (passenger, driver) value is projection of passenger to driver toward goal
+    """
     passengers = filter(lambda p: self.people_capacity[p] <= 0, list_people)
     drivers = filter(lambda p: self.people_capacity[p] > 0, list_people)
     passenger_driver_matrix = []
@@ -136,25 +135,25 @@ class Explorer:
     return np.array(passenger_driver_matrix)      
     
   def get_passenger_driver_index_matrix(self, list_people):
-  """
-  get numpy matrix of passenger x driver *index*
-  each (passenger, driver) value is (index_passenger, index_car)
-  """  
+    """
+    get numpy matrix of passenger x driver *index*
+    each (passenger, driver) value is (index_passenger, index_car)
+    """  
     passengers = filter(lambda p: self.people_capacity[p] <= 0, list_people)
     drivers = filter(lambda p: self.people_capacity[p] > 0, list_people)
     index_matrix = []
     # for each passenger, make each cell (index_passenger, index_car) for lookup
     for i in range(len(passengers)):
       list_index_tuple = [(passengers[i], drivers[j]) for j in range(len(drivers))]
-      passenger_driver_matrix.append(list_index_tuple)
+      index_matrix.append(list_index_tuple)
     
     return np.array(index_matrix)      
 
   def get_passenger_driver_distance_matrix(self, list_people):
-  """
-  get numpy matrix of passenger x driver
-  each (passenger, driver) value is projection of passenger to driver toward goal
-  """  
+    """
+    get numpy matrix of passenger x driver
+    each (passenger, driver) value is projection of passenger to driver toward goal
+    """  
     passengers = filter(lambda p: self.people_capacity[p] <= 0, list_people)
     drivers = filter(lambda p: self.people_capacity[p] > 0, list_people)
     passenger_driver_matrix = []
@@ -166,49 +165,30 @@ class Explorer:
       passenger_driver_matrix.append(list_distances)
     
     return np.array(passenger_driver_matrix)
-    
-  def get_passenger_driver_index_matrix(self):
-  """
-  get numpy matrix of passenger x driver *index*
-  each (passenger, driver) value is (index_passenger, index_car)
-  """  
-    passengers = filter(lambda p: self.people_capacity[p] <= 0, range(self.num_people))
-    drivers = filter(lambda p: self.people_capacity[p] > 0, range(self.num_people))
-    index_matrix = []
-    # for each passenger, make each cell (index_passenger, index_car) for lookup
-    for i in range(len(passengers)):
-      list_index_tuple = [(passengers[i], drivers[j]) for j in range(len(drivers))]
-      passenger_driver_matrix.append(list_index_tuple)
-    
-    return np.array(index_matrix)
   
   def euclidean_distance(self, p1, p2):
-  """
-  Euclidean distance between two points
-  """
+    """
+    Euclidean distance between two points
+    """
     return math.sqrt(sum(math.pow((a - b), 2) for a, b in zip(p1, p2)))
       
   def projection(self, v1, v2):
-  """
-  projection of v1 onto v2
-  """
-    return float(v1 * math.cos(self.angle(v1, v2)))
+    """
+    projection of v1 onto v2
+    """
+    return float(self.length(v1) * math.cos(self.angle(v1, v2)))
     
   def vertical_distance(self, v1, v2):
-  """
-  vertical distance from v1 onto v2
-  """
-    return float(v1 * math.sin(self.angle(v1, v2)))
+    """
+    vertical distance from v1 onto v2
+    """
+    return float(self.length(v1) * math.sin(self.angle(v1, v2)))
     
   def dotproduct(self, v1, v2):
     return sum((a*b) for a, b in zip(v1, v2))
 
   def length(self, v):
-    return math.sqrt(dotproduct(v, v))
+    return math.sqrt(self.dotproduct(v, v))
 
   def angle(self, v1, v2):
-    return math.acos(dotproduct(v1, v2) / (length(v1) * length(v2)))
-=======
-    self.pickup_costs[driver][pass_key] = (min_path_cost, min_path)
-    return (min_path_cost, min_path)
->>>>>>> 34bc65e790e1395d9d643b9363ae052b7fd9de4f
+    return math.acos(self.dotproduct(v1, v2) / (self.length(v1) * self.length(v2)))
