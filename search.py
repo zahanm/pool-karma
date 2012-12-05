@@ -131,6 +131,28 @@ class Explorer:
           list_distances[j] = np.nan
       passenger_driver_matrix.append(list_distances)
     return np.array(passenger_driver_matrix)
+    
+  def get_passenger_driver_projection_matrix_ver2(self, list_people):
+    """
+    get numpy matrix of passenger x driver
+    each (passenger, driver) value is projection of passenger to driver toward goal
+    """
+    passengers = filter(lambda p: self.people_capacity[p] <= 0, list_people)
+    drivers = filter(lambda p: self.people_capacity[p] > 0, list_people)
+    passenger_driver_matrix = []
+    list_driver_vectors = [(self.locations[i][0] - self.goal[0], self.locations[i][1] - self.goal[1]) for i in drivers]
+
+    # for each passenger, calculate a list of projection distance to each driver
+    # as a row in passenger x driver matrix
+    for i in range(len(passengers)):
+      passenger_vector = (self.locations[passengers[i]][0] - self.goal[0], self.locations[passengers[i]][1] - self.goal[1])
+      list_distances = [ self.vertical_distance(passenger_vector, driver_vector) for driver_vector in list_driver_vectors ]
+      list_projections = [self.projection(passenger_vector, driver_vector) for driver_vector in list_driver_vectors]
+      for j in range(len(list_driver_vectors)):
+        if (list_projections[j] < 0):
+          list_distances[j] *= -1
+      passenger_driver_matrix.append(list_distances)
+    return np.array(passenger_driver_matrix)
 
   def get_passenger_driver_index_matrix(self, list_people):
     """
