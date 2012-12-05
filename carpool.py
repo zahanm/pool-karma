@@ -155,6 +155,108 @@ def projectionDistanceBased(ex):
     list_min_car_passengers.append(min_passenger_idx)
     if len(list_min_car_passengers) <= ex.people_capacity[min_car_idx] - 1:
       assignment[min_car_idx] = list_min_car_passengers
+      print 'assign passenger %s to driver %s' % (str(min_passenger_idx), str(min_car_idx))
+
+    # remove car column if car is full after taking this passenger
+    if (len(list_min_car_passengers) == ex.people_capacity[min_car_idx] - 1):
+      projection_matrix = np.delete(projection_matrix, min_index_1, axis=1)
+      index_matrix = np.delete(index_matrix, min_index_1, axis=1)
+
+    # remove passenger
+    projection_matrix = np.delete(projection_matrix, min_index_0, axis=0)
+    index_matrix = np.delete(index_matrix, min_index_0, axis=0)
+
+  ### for remaining passengers, assign to closest driver ###
+  if np.size(projection_matrix) > 0:
+
+    # get a list of people indices
+    list_index_matrix = index_matrix.tolist()
+    list_index_cars = [tuple[1] for tuple in list_index_matrix[0]]
+    list_index_passengers = []
+    for list_index in list_index_matrix:
+      list_index_passengers.append(list_index[0][0])
+    list_people = list_index_cars + list_index_passengers
+
+    # get distance and index matrices
+    distance_matrix = ex.get_passenger_driver_distance_matrix(list_people)
+    index_matrix = ex.get_passenger_driver_index_matrix(list_people)
+
+    # for each global minimum distance, assign passenger to car
+    while np.size(distance_matrix) > 0 and not np.isnan(np.nanmin(distance_matrix)):
+
+      (num_unassign_passengers, num_avail_cars) = distance_matrix.shape
+      min_index = np.nanargmin(distance_matrix)
+      min_index_0 = min_index / num_avail_cars
+      min_index_1 = min_index % num_avail_cars
+      (min_passenger_idx, min_car_idx) = index_matrix[min_index_0][min_index_1]
+
+      # assign min passenger to min car
+      list_min_car_passengers = assignment[min_car_idx]
+      if (list_min_car_passengers == None):
+        list_min_car_passengers = []
+      list_min_car_passengers.append(min_passenger_idx)
+      if len(list_min_car_passengers) <= ex.people_capacity[min_car_idx] - 1:
+        assignment[min_car_idx] = list_min_car_passengers
+
+      # remove car column if car is full after taking this passenger
+      if (len(list_min_car_passengers) == ex.people_capacity[min_car_idx] - 1):
+        distance_matrix = np.delete(distance_matrix, min_index_1, axis=1)
+        index_matrix = np.delete(index_matrix, min_index_1, axis=1)
+
+      # remove passenger
+      distance_matrix = np.delete(distance_matrix, min_index_0, axis=0)
+      index_matrix = np.delete(index_matrix, min_index_0, axis=0)
+
+  print 'assignment:'
+  print assignment
+
+  # calculate cost
+  total_cost = 0.0
+  for driver in filter(lambda p: ex.people_capacity[p] > 0, range(ex.num_people)):
+    if assignment[driver] == None:
+      assignment[driver] = []
+    total_cost += ex.pickup_cost(driver, assignment[driver])[0]
+    assignment[driver] = ex.pickup_cost(driver, assignment[driver])[1]
+    
+  return (total_cost, assignment)
+  
+def projectionDistanceBasedVer2(ex):
+  """
+  @param ex: Explorer
+  Algorithm based on projection distance
+  """
+  ### pick up passengers on the way ###
+  # create matrix (passenger x driver)
+  #projection_matrix = ex.get_passenger_driver_projection_matrix_ver2(range(ex.num_people))
+  projection_matrix = ex.get_passenger_driver_distance_matrix(range(ex.num_people))
+  index_matrix = ex.get_passenger_driver_index_matrix(range(ex.num_people))
+  
+  print projection_matrix
+  print index_matrix
+  
+  # for each global minimum projection, assign passenger to the car
+  # remove passenger row
+  # once the car is filled, remove car column
+  assignment = [ None ] * ex.num_people
+  while np.size(projection_matrix) > 0 and not np.isnan(np.nanmin(projection_matrix)):
+
+    (num_unassign_passengers, num_avail_cars) = projection_matrix.shape
+    min_index = np.nanargmin(projection_matrix)
+    min_index_0 = min_index / num_avail_cars
+    min_index_1 = min_index % num_avail_cars
+    (min_passenger_idx, min_car_idx) = index_matrix[min_index_0][min_index_1]
+
+    print projection_matrix
+    print 'min: %s at (%s, %s)' % (str(np.nanmin(projection_matrix)), str(min_index_0), str(min_index_1))
+
+    # assign min passenger to min car
+    list_min_car_passengers = assignment[min_car_idx]
+    if (list_min_car_passengers == None):
+      list_min_car_passengers = []
+    list_min_car_passengers.append(min_passenger_idx)
+    if len(list_min_car_passengers) <= ex.people_capacity[min_car_idx] - 1:
+      assignment[min_car_idx] = list_min_car_passengers
+      print 'assign passenger %s to driver %s' % (str(min_passenger_idx), str(min_car_idx))
 
     # remove car column if car is full after taking this passenger
     if (len(list_min_car_passengers) == ex.people_capacity[min_car_idx] - 1):
@@ -249,6 +351,7 @@ def output_results(ex, inp_fname, method, min_cost, assignment):
 algorithms = {
   "baseline": baseline,
   "projection": projectionDistanceBased,
+  "projection2": projectionDistanceBasedVer2,
   "agglomerative": agglomerative
 }
 
