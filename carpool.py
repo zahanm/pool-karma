@@ -330,6 +330,7 @@ def output_results(ex, inp_fname, method, min_cost, assignment):
   output_fname = method + "_" + path.basename(inp_fname)
   with open(path.join(output_folder, output_fname), "w") as out:
     print "Minimum cost: {:.4}".format(min_cost)
+    out.write(str(min_cost) + "\n")
     print 'Minimum assignment: '
     for i in range(len(assignment)):
       # is a driver
