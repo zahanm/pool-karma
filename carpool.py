@@ -115,7 +115,7 @@ def agglomerative(ex):
     #if(assignments[row_names(min_row)].len>= cap -1):
         #np.delete(distance_matrix, min_row,0)
         #min_row.remove[row_names(min_row)]
-    
+
 
 
 
