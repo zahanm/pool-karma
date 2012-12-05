@@ -86,10 +86,6 @@ def agglomerative(ex):
 
   people_with_cars = [i for i,x in enumerate(ex.people_capacity) if x>0]
   people_without_cars = [i for i,x in enumerate(ex.people_capacity) if x==0]
-  print "people with cars"
-  print people_with_cars
-  print "people without_cars"
-  print people_without_cars
   # initiate matrix with non-car people on rows and car people on columns
   first_i = -1
   distance_array = []
@@ -109,8 +105,6 @@ def agglomerative(ex):
       if (i==first_i):
         col_names.append(j)
       person_dist.append(ex.distances[i][j]['weight'])
-      print "person_dist:"
-      print person_dist
     distance_array.append(person_dist)
   distance_matrix = np.matrix(distance_array)
   print "distance_matrix"
@@ -121,50 +115,25 @@ def agglomerative(ex):
   while len(col_names) > 0:
     min_row = np.unravel_index(np.argmin(distance_matrix), np.shape(distance_matrix))[0]
     min_col = np.unravel_index(np.argmin(distance_matrix), np.shape(distance_matrix))[1]
-    print "min_car: "
-    print row_names[min_row]
-    print "min_row"
-    print min_row
-    print "min_non_car:"
-    print col_names[min_col]
-    print "min_col"
-    print min_col
     min_car = row_names[min_row]
     assignments_dict[min_car].append(col_names[min_col])
     distance_matrix = np.delete(distance_matrix, min_col,1)
-    print "distance_matrix after delete"
-    print distance_matrix
     del col_names[min_col]
     if len(assignments_dict[min_car]) >= (ex.people_capacity[min_car] - 1):
       distance_matrix = np.delete(distance_matrix, min_row,0)
       del row_names[min_row]
     #change the location of the car to be centroid of all people assigned to it and recompute distances for that row
     else:
-      print "car loc"
-      print ex.locations[min_car]
       centroid_x, centroid_y = ex.locations[min_car]
       for person in assignments_dict[min_car]:
-        print "person"
-        print person
-        print "non_car loc"
-        print ex.locations[person]
         centroid_x += ex.locations[person][0]
         centroid_y += ex.locations[person][1]
       centroid_x = centroid_x/(len(assignments_dict[min_car])+1)
       centroid_y = centroid_y/(len(assignments_dict[min_car])+1)
-      print "centroid loc"
-      print centroid_x, centroid_y
       new_row_dist=[]
       for person in col_names:
         new_row_dist.append(((ex.locations[person][0]-centroid_x)**2+(ex.locations[person][1]-centroid_y)**2)**0.5)
-      print "new_row_dist: "
-      print new_row_dist
-      print "\n"
-      print distance_matrix[min_row]
       distance_matrix[min_row] = new_row_dist
-      print "distance_matrix after replace centroid"
-      print distance_matrix
-  print assignments_dict
   total_cost = 0.0
   assignment = [ None ] * ex.num_people
   for driver in filter(lambda p: ex.people_capacity[p] > 0, range(ex.num_people)):
