@@ -97,7 +97,7 @@ def agglomerative(ex):
   # initialize dictionary of assignments_dict
   for car_person in people_with_cars:
     assignments_dict[car_person] = []
-  
+
   #initialize matrix of distances between non-car people to car people
   for i in people_with_cars:
     person_dist = []
@@ -114,8 +114,8 @@ def agglomerative(ex):
   distance_matrix = np.matrix(distance_array)
   print "distance_matrix"
   print distance_matrix
-  
-  
+
+
   # while there is an unassigned non-car person, assign the person with minimum distance to a car with space. Then recenter the location of that car.
   while len(col_names) > 0:
     min_row = np.unravel_index(np.argmin(distance_matrix), np.shape(distance_matrix))[0]
@@ -143,7 +143,7 @@ def agglomerative(ex):
       centroid_y = centroid_y/(len(ex.locations[person])+1)
       new_row_dist=[]
       for person in col_names:
-        new_row_dist.append(((ex.locations[person][0]-centroid_x)**2+(ex.locations[person][0]-centroid_x)**2)**0.5) 
+        new_row_dist.append(((ex.locations[person][0]-centroid_x)**2+(ex.locations[person][0]-centroid_x)**2)**0.5)
       print "new_row_dist: "
       print new_row_dist
       print "\n"
@@ -158,7 +158,7 @@ def agglomerative(ex):
     if assignments_dict[driver] == []:
       assignment[driver] = []
     total_cost += ex.pickup_cost(driver, assignments_dict[driver])[0]
-    assignment[driver] = ex.pickup_cost(driver, assignments_dict[driver])[1]    
+    assignment[driver] = ex.pickup_cost(driver, assignments_dict[driver])[1]
   return (total_cost, assignment)
 
 
@@ -171,10 +171,10 @@ def projectionDistanceBased(ex):
   # create matrix (passenger x driver)
   projection_matrix = ex.get_passenger_driver_projection_matrix(range(ex.num_people))
   index_matrix = ex.get_passenger_driver_index_matrix(range(ex.num_people))
-  
+
   print projection_matrix
   print index_matrix
-  
+
   # for each global minimum projection, assign passenger to the car
   # remove passenger row
   # once the car is filled, remove car column
@@ -258,7 +258,7 @@ def projectionDistanceBased(ex):
       assignment[driver] = []
     total_cost += ex.pickup_cost(driver, assignment[driver])[0]
     assignment[driver] = ex.pickup_cost(driver, assignment[driver])[1]
-    
+
   return (total_cost, assignment)
 
 def output_results(ex, inp_fname, method, min_cost, assignment):
