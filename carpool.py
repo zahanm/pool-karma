@@ -2,8 +2,6 @@
 import re
 import sys
 import numpy as np
-<<<<<<< HEAD
-=======
 import os
 import os.path as path
 
@@ -79,7 +77,6 @@ def baseline(ex):
       min_assignment = passenger_assignment
   return (min_cost, min_assignment)
 
-<<<<<<< HEAD
 def agglomerative(ex):
   """
   @param ex: Explorer
@@ -121,15 +118,8 @@ def agglomerative(ex):
       np.delete(distance_matrix, min_row,0)
       min_row.remove[row_names(min_row)]
 
-
-
-
   return (cost, assigment)
 
-algorithms = {
-  "baseline": baseline,
-  "agglomerative": agglomerative
-=======
 def projectionDistanceBased(ex):
   """
   @param ex: Explorer
