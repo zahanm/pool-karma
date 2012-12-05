@@ -1,13 +1,10 @@
 
 import re
 import sys
-<<<<<<< HEAD
 import numpy as np
-=======
 import os
 import os.path as path
 
->>>>>>> 34bc65e790e1395d9d643b9363ae052b7fd9de4f
 import networkx as nx
 
 from search import Explorer
@@ -167,28 +164,6 @@ def projectionDistanceBased(ex):
 
   return (total_cost, assignment)
 
-
-algorithms = {
-  "baseline": baseline
-  "projection": projectionDistanceBased
-}
-
-def main():
-  if len(sys.argv) != 3:
-    print "usage: {} <method> <input filename>".format(__file__)
-    sys.exit(1)
-  inp_fname = sys.argv[2]
-  ex = read_data(inp_fname)
-  print "---* dataset *---"
-  print ex
-  print "Drivers: {}".format(filter(lambda p: ex.people_capacity[p] > 0, range(ex.num_people)))
-  method = sys.argv[1]
-  if method not in algorithms:
-    print "Invalid method specified: {}".format(method)
-    sys.exit(1)
-  min_cost, assignment = algorithms[method](ex)
-  output_results(ex, inp_fname, method, min_cost, assignment)
-
 def output_results(ex, inp_fname, method, min_cost, assignment):
   print "---* {} results *---".format(method)
   cwd = path.dirname(path.abspath(__file__))
@@ -214,6 +189,27 @@ def output_results(ex, inp_fname, method, min_cost, assignment):
         else:
           print "0.0\t",
       print
+
+algorithms = {
+  "baseline": baseline
+  "projection": projectionDistanceBased
+}
+
+def main():
+  if len(sys.argv) != 3:
+    print "usage: {} <method> <input filename>".format(__file__)
+    sys.exit(1)
+  inp_fname = sys.argv[2]
+  ex = read_data(inp_fname)
+  print "---* dataset *---"
+  print ex
+  print "Drivers: {}".format(filter(lambda p: ex.people_capacity[p] > 0, range(ex.num_people)))
+  method = sys.argv[1]
+  if method not in algorithms:
+    print "Invalid method specified: {}".format(method)
+    sys.exit(1)
+  min_cost, assignment = algorithms[method](ex)
+  output_results(ex, inp_fname, method, min_cost, assignment)
 
 if __name__ == '__main__':
   main()
