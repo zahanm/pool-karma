@@ -132,7 +132,7 @@ def agglomerative(ex):
     del col_names[min_col]
     if len(assignments_dict[min_car]) >= (ex.people_capacity[min_car] - 1):
       distance_matrix = np.delete(distance_matrix, min_row,0)
-      min_row.remove[min_car]
+      del row_names[min_row]
     #change the location of the car to be centroid of all people assigned to it and recompute distances for that row
     else:
       centroid_x, centroid_y = ex.locations[min_car]
