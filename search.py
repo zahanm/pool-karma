@@ -124,8 +124,8 @@ class Explorer:
     # as a row in passenger x driver matrix
     for i in range(len(passengers)):
       passenger_vector = (self.locations[passengers[i]][0] - self.goal[0], self.locations[passengers[i]][1] - self.goal[1])
-      list_distances = [self.vertical_distance(passenger_vector, driver_vector) for driver_vector in list_driver_vectors]
-      list_projections = [self.projection(passenger_vector, driver_vector) for driver_vector in list_driver_vectors]
+      list_distances = [ vertical_distance(passenger_vector, driver_vector) for driver_vector in list_driver_vectors ]
+      list_projections = [projection(passenger_vector, driver_vector) for driver_vector in list_driver_vectors]
       for j in range(len(list_driver_vectors)):
         if (list_projections[j] < 0 or list_projections[j] > self.length(list_driver_vectors[j]) or list_distances[j] < 0):
           list_distances[j] = np.nan
@@ -159,7 +159,7 @@ class Explorer:
     # for each passenger, calculate a list of projection distance to each driver
     # as a row in passenger x driver matrix
     for i in passengers:
-      list_distances = [self.euclidean_distance(self.locations[i], self.locations[j]) for j in drivers]
+      list_distances = [ euclidean_distance(self.locations[i], self.locations[j]) for j in drivers ]
       passenger_driver_matrix.append(list_distances)
 
     return np.array(passenger_driver_matrix)
@@ -179,29 +179,29 @@ class Explorer:
 
     return np.array(index_matrix)
 
-  def euclidean_distance(self, p1, p2):
-    """
-    Euclidean distance between two points
-    """
-    return math.sqrt(sum(math.pow((a - b), 2) for a, b in zip(p1, p2)))
+def euclidean_distance(p1, p2):
+  """
+  Euclidean distance between two points
+  """
+  return math.sqrt(sum(math.pow((a - b), 2) for a, b in zip(p1, p2)))
 
-  def projection(self, v1, v2):
-    """
-    projection of v1 onto v2
-    """
-    return float(v1 * math.cos(self.angle(v1, v2)))
+def projection(v1, v2):
+  """
+  projection of v1 onto v2
+  """
+  return float(v1 * math.cos(angle(v1, v2)))
 
-  def vertical_distance(self, v1, v2):
-    """
-    vertical distance from v1 onto v2
-    """
-    return float(v1 * math.sin(self.angle(v1, v2)))
+def vertical_distance(v1, v2):
+  """
+  vertical distance from v1 onto v2
+  """
+  return float(v1 * math.sin(angle(v1, v2)))
 
-  def dotproduct(self, v1, v2):
-    return sum((a*b) for a, b in zip(v1, v2))
+def dotproduct(v1, v2):
+  return sum((a*b) for a, b in zip(v1, v2))
 
-  def length(self, v):
-    return math.sqrt(dotproduct(v, v))
+def length(v):
+  return math.sqrt(dotproduct(v, v))
 
-  def angle(self, v1, v2):
-    return math.acos(dotproduct(v1, v2) / (length(v1) * length(v2)))
+def angle(v1, v2):
+  return math.acos(dotproduct(v1, v2) / (length(v1) * length(v2)))
