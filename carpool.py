@@ -227,7 +227,7 @@ def output_results(ex, inp_fname, method, min_cost, assignment):
     os.mkdir(output_folder)
   output_fname = method + "_" + path.basename(inp_fname)
   with open(path.join(output_folder, output_fname), "w") as out:
-    print "Minimum cost: {:.4}".format(min_cost)
+    print "Minimum cost: {:.2f}".format(min_cost)
     out.write(str(min_cost) + "\n")
     print 'Minimum assignment: '
     for i in range(len(assignment)):
@@ -242,7 +242,7 @@ def output_results(ex, inp_fname, method, min_cost, assignment):
       print "{}\t".format(origin),
       for dest in ex.distances.nodes():
         if ex.distances.has_edge(origin, dest):
-          print "{:.3}\t".format(ex.distances[origin][dest]["weight"]),
+          print "{:.2f}\t".format(ex.distances[origin][dest]["weight"]),
         else:
           print "0.0\t",
       print
