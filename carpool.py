@@ -87,6 +87,8 @@ def agglomerative(ex):
   first_i = -1
   distance_matrix =np.matrix()
   assignments = {}
+  for(car_person in people_with_cars):
+    assignments[car_person] = [] 
   for(i in people_with_cars):
     person_dist = []
     row_names.append(i)
@@ -100,11 +102,12 @@ def agglomerative(ex):
 
     min_row = np.unravel_index(np.argmin(distance_matrix), np.shape(distance_matrix))[0]
     min_col = np.unravel_index(np.argmin(distance_matrix), np.shape(distance_matrix))[1]
-    if(col_names(min_col) ):    #check if car has assignment
-
-        if(num assignments is cap -1)
-            remove column
-    else:   #add new key value
+    
+    assignments[col_names(min_col)].append(row_names(min_row))
+    
+    if(num assignments is cap -1)
+        remove column
+   
 
 
   return (cost, assigment)
