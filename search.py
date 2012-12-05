@@ -131,7 +131,7 @@ class Explorer:
           list_distances[j] = np.nan
       passenger_driver_matrix.append(list_distances)
     return np.array(passenger_driver_matrix)
-    
+
   def get_passenger_driver_projection_matrix_ver2(self, list_people):
     """
     get numpy matrix of passenger x driver
@@ -158,7 +158,7 @@ class Explorer:
     """
     get numpy matrix of passenger x driver *index*
     each (passenger, driver) value is (index_passenger, index_car)
-    """  
+    """
     passengers = filter(lambda p: self.people_capacity[p] <= 0, list_people)
     drivers = filter(lambda p: self.people_capacity[p] > 0, list_people)
     index_matrix = []
@@ -166,14 +166,14 @@ class Explorer:
     for i in range(len(passengers)):
       list_index_tuple = [(passengers[i], drivers[j]) for j in range(len(drivers))]
       index_matrix.append(list_index_tuple)
-    
-    return np.array(index_matrix)      
+
+    return np.array(index_matrix)
 
   def get_passenger_driver_distance_matrix(self, list_people):
     """
     get numpy matrix of passenger x driver
     each (passenger, driver) value is projection of passenger to driver toward goal
-    """  
+    """
     passengers = filter(lambda p: self.people_capacity[p] <= 0, list_people)
     drivers = filter(lambda p: self.people_capacity[p] > 0, list_people)
     passenger_driver_matrix = []

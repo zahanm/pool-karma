@@ -241,9 +241,9 @@ def projectionDistanceBased(ex):
       assignment[driver] = []
     total_cost += ex.pickup_cost(driver, assignment[driver])[0]
     assignment[driver] = ex.pickup_cost(driver, assignment[driver])[1]
-    
+
   return (total_cost, assignment)
-  
+
 def projectionDistanceBasedVer2(ex):
   """
   @param ex: Explorer
@@ -254,10 +254,10 @@ def projectionDistanceBasedVer2(ex):
   #projection_matrix = ex.get_passenger_driver_projection_matrix_ver2(range(ex.num_people))
   projection_matrix = ex.get_passenger_driver_distance_matrix(range(ex.num_people))
   index_matrix = ex.get_passenger_driver_index_matrix(range(ex.num_people))
-  
+
   print projection_matrix
   print index_matrix
-  
+
   # for each global minimum projection, assign passenger to the car
   # remove passenger row
   # once the car is filled, remove car column
