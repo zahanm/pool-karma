@@ -200,7 +200,6 @@ if __name__ == '__main__':
   elif len(sys.argv) == 3:
     graph(sys.argv[2])
   else:
-    print "usage {} <gen|graph>".format(__file__)
     print "usage: {} gen <model> <numPeople> <numCars>".format(__file__)
     print "usage: {} show <data file>".format(__file__)
     print "usage: {} graph <data file>".format(__file__)
