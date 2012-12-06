@@ -92,7 +92,26 @@ def detours(numPeople, numCars, width, height):
   return people, goal
 
 def dense(numPeople, numCars, width, height):
-  pass
+  """
+  Drivers, passengers and goal from gaussian
+  """
+  people = []
+  midx, midy = 0.5 * width, 0.5 * height
+  # drivers
+  for i in xrange(numCars):
+    x = random.gauss(midx, ARGV.stddev)
+    y = random.gauss(midy, ARGV.stddev)
+    people.append( (x, y, ARGV.capacity) )
+  # passengers
+  for i in xrange(numPeople - numCars):
+    x = random.gauss(midx, ARGV.stddev)
+    y = random.gauss(midy, ARGV.stddev)
+    people.append( (x, y, 0) )
+  # goal
+  x = random.gauss(midx, ARGV.stddev)
+  y = random.gauss(midy, ARGV.stddev)
+  goal = (x, y)
+  return people, goal
 
 def write_out(out, people, goal):
   """
@@ -121,7 +140,8 @@ def dist(a,b):
 algorithms = {
   "uniform": uniform,
   "clustered": clustered,
-  "detours": detours
+  "detours": detours,
+  "dense": dense
 }
 
 # generate random locations for people and goal state
@@ -146,7 +166,7 @@ colors = ["red", "blue", "green", "yellow", "black"]
 
 def plot_locations(xs, ys, cats):
   if ARGV.verbose: print "Limits: {}".format([-0.5, np.max(xs) + 0.5, -0.5, np.max(ys) + 0.5])
-  plt.axis([-0.5, np.max(xs) + 0.5, -0.5, np.max(ys) + 0.5])
+  plt.axis([-0.5, 10.5, -0.5, 10.5])
   for i, (x, y) in enumerate(itertools.izip(xs, ys)):
     if cats[i] == 1:
       color = colors[0]
