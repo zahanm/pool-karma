@@ -19,7 +19,6 @@ def uniform(numPeople, numCars, width, height):
   people = []
   carNodes = random.sample(range(numPeople), numCars)
 
-  out.write("{}\n".format( numPeople + 1 ))
   for i in xrange(numPeople + 1):
     x = random.uniform(0, width)
     y = random.uniform(0, height)
@@ -70,7 +69,6 @@ def detours(numPeople, numCars, width, height):
   Drivers, goal from uniform
   Passengers from points perturbed off path of driver to goal
   """
-  out.write("{}\n".format( numPeople + 1 ))
   drivers = []
   for i in xrange(numCars):
     x = random.uniform(0, width)
