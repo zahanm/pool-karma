@@ -2,7 +2,7 @@
 import numpy as np
 
 import heuristics
-from search import exhaustive
+from search import exhaustive, UCS
 
 #
 # search algorithms
@@ -11,9 +11,17 @@ from search import exhaustive
 
 def baseline(ex):
   """
+  Exhaustive search over the goal states
   @param ex: Explorer
   """
   return exhaustive(ex, ex.iter_passenger_assignments(), heuristics.pickup_all_cost)
+
+def search(ex):
+  """
+  Use state space model outlined in paper
+  """
+  searcher = UCS(ex.add_waypoints, ex.routes_completed)
+  return searcher(ex.starting_routes())
 
 #
 # custom solutions
@@ -297,6 +305,7 @@ def kNearestDistance(ex):
 
 algorithms = {
   "baseline": baseline,
+  "search": search,
   "projection": projectionDistance,
   "knearest": kNearestDistance,
   "agglomerative": agglomerative

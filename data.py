@@ -75,3 +75,37 @@ class Explorer:
         if p[d] == None:
           p[d] = []
       yield p
+
+  def starting_routes(self):
+    routes = []
+    for person in xrange(self.num_people):
+      if self.people_capacity[person] > 0:
+        # is driver, starts out at own location
+        routes.append( (person, ) )
+    return tuple(routes)
+
+  def add_waypoints(self, routes):
+    """
+    All possible modifications to a routes 'state'
+    yields ( modified routes, distance for modification )
+    @param routes list of tuples
+    """
+    for i, route in enumerate(routes):
+      if route[-1] == (self.num_locations - 1):
+        continue
+      if self.verbose: print "Adding to route {}".format(i)
+      for dest in xrange(self.num_locations):
+        if dest in route:
+          continue
+        origin = route[-1]
+        modified = routes[:i] + ( route + (dest, ), ) + routes[i+1:]
+        yield (modified, self.distances[origin][dest]["weight"])
+
+  def routes_completed(self, routes):
+    num_transported = 0
+    for route in routes:
+      if route[-1] != (self.num_locations - 1):
+        # not at goal
+        return False
+      num_transported += len(route)
+    return num_transported == self.num_people
