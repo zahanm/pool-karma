@@ -368,6 +368,8 @@ def output_results(ex, input_f, method, min_cost, assignment):
       if (assignment[i] != None):
         print "{} drives {}".format(i, assignment[i])
         out.write(str(assignment[i]) + "\n")
+    if not ARGV.verbose:
+      return
     print "Edge weights:"
     print "\t",
     print "\t".join([ str(item) for item in ex.distances.nodes() ])
