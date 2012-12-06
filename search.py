@@ -11,12 +11,6 @@ def exhaustive(data, states, state_cost_fn):
       min_state = state
   return min_cost, min_state
 
-class Exhaustive:
-  """
-  TODO
-  """
-  pass
-
 class UCS:
   """
   Uniform cost search
@@ -32,7 +26,6 @@ class UCS:
     heappush(self.frontier, (0, start))
     while True:
       if len(self.frontier) == 0:
-        if ex.VERBOSE: print "Failed to find the goal!"
         return None
       priority, s = heappop(self.frontier)
       if self.goal(s):
@@ -42,3 +35,34 @@ class UCS:
         if t in self.explored:
           continue
         heappush(self.frontier, (priority + cost, t))
+
+class DFS:
+  """
+  Depth first search for optimal path cost
+  """
+
+  def __init__(self, actions, goal):
+    self.actions = actions
+    self.goal = goal
+    # no need, I know the graph is acyclic
+    # self.explored = set()
+
+  def __call__(self, start):
+    # recursive inner function
+    def dfs(s, path_cost, global_min_cost):
+      if self.goal(s):
+        return path_cost, s
+      min_cost = float("inf")
+      min_state = None
+      for t, cost in self.actions(s):
+        if path_cost + cost > global_min_cost:
+          continue
+        final_cost, final_state = dfs(t, path_cost + cost, global_min_cost)
+        if final_cost < min_cost:
+          min_cost = final_cost
+          min_state = final_state
+      if min_cost < global_min_cost:
+        global_min_cost = min_cost
+      return min_cost, min_state
+    # start algorithm
+    return dfs( start, 0.0, float("inf") )

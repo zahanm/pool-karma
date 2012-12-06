@@ -2,7 +2,7 @@
 import numpy as np
 
 import heuristics
-from search import exhaustive, UCS
+from search import exhaustive, UCS, DFS
 
 #
 # search algorithms
@@ -16,12 +16,17 @@ def baseline(ex):
   """
   return exhaustive(ex, ex.iter_passenger_assignments(), heuristics.pickup_all_cost)
 
-def search(ex):
+def searchucs(ex):
+  return search(ex, UCS(ex.add_waypoints, ex.routes_completed))
+
+def searchdfs(ex):
+  return search(ex, DFS(ex.add_waypoints, ex.routes_completed))
+
+def search(ex, searcher):
   """
   Use state space model outlined in paper
   returns (min_cost, min_assignment)
   """
-  searcher = UCS(ex.add_waypoints, ex.routes_completed)
   min_cost, state = searcher(ex.starting_routes())
   assignment = [ None ] * ex.num_people
   i = 0
@@ -313,7 +318,8 @@ def kNearestDistance(ex):
 
 algorithms = {
   "baseline": baseline,
-  "search": search,
+  "searchucs": searchucs,
+  "searchdfs": searchdfs,
   "projection": projectionDistance,
   "knearest": kNearestDistance,
   "agglomerative": agglomerative
