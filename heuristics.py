@@ -3,9 +3,20 @@ import itertools
 import numpy as np
 import math
 
+def pickup_all_cost(ex, assignment, min_cost):
+  total_cost = 0.0
+  for driver in xrange(ex.num_people):
+    if assignment[driver] == None:
+      continue
+    if total_cost >= min_cost:
+      break
+    cost, assignment[driver] = pickup_cost(ex, driver, assignment[driver])
+    total_cost += cost
+  return total_cost
+
 def pickup_cost(ex, driver, passengers):
   """
-  Calculate pickup costs
+  Calculate pickup costs for particular driver and passengers
   """
   pass_key = tuple(sorted(passengers))
   if pass_key in ex.pickup_costs[driver]:

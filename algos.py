@@ -2,26 +2,23 @@
 import numpy as np
 
 import heuristics
+from search import exhaustive
+
+#
+# search algorithms
+# ----------
+#
 
 def baseline(ex):
   """
   @param ex: Explorer
   """
-  min_cost = float("inf")
-  min_assignment = None
-  for passenger_assignment in ex.iter_passenger_assignments():
-    total_cost = 0.0
-    for driver in filter(lambda p: ex.people_capacity[p] > 0, range(ex.num_people)):
-      if passenger_assignment[driver] == None:
-        continue
-      if total_cost >= min_cost:
-        break
-      cost, passenger_assignment[driver] = heuristics.pickup_cost(ex, driver, passenger_assignment[driver])
-      total_cost += cost
-    if total_cost < min_cost:
-      min_cost = total_cost
-      min_assignment = passenger_assignment
-  return (min_cost, min_assignment)
+  return exhaustive(ex, ex.iter_passenger_assignments(), heuristics.pickup_all_cost)
+
+#
+# custom solutions
+# ----------
+#
 
 def agglomerative(ex):
   """
