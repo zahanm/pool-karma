@@ -83,7 +83,11 @@ def detours(numPeople, numCars, width, height):
     x = random.uniform(min(chosen[0], goal[0]), max(chosen[0], goal[0]))
     y = random.uniform(min(chosen[1], goal[1]), max(chosen[1], goal[1]))
     x += random.gauss(0, ARGV.stddev)
+    if x < 0: x = 0.0
+    if x > width: x = width
     y += random.gauss(0, ARGV.stddev)
+    if y < 0: y = 0.0
+    if y > width: y = width
     people.append( (x, y, 0) )
   return people, goal
 
