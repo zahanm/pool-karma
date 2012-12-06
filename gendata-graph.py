@@ -138,7 +138,7 @@ def gen():
 
   print "Written to: {}".format(filename)
 
-colors = ["blue", "red", "green", "yellow", "black"]
+colors = ["red", "blue", "green", "yellow", "black"]
 
 def plot_locations(xs, ys, cats):
   if ARGV.verbose: print "Limits: {}".format([-0.5, np.max(xs) + 0.5, -0.5, np.max(ys) + 0.5])
