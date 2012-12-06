@@ -145,7 +145,7 @@ def agglomerative(ex):
   return (total_cost, assignment)
 
 
-def projectionDistanceBased(ex):
+def projectionDistance(ex):
   """
   @param ex: Explorer
   Algorithm based on projection distance
@@ -248,7 +248,7 @@ def projectionDistanceBased(ex):
 
   return (total_cost, assignment)
 
-def projectionDistanceBasedVer2(ex):
+def kNearestDistance(ex):
   """
   @param ex: Explorer
   Algorithm based on projection distance
@@ -382,8 +382,8 @@ def output_results(ex, input_f, method, min_cost, assignment):
 
 algorithms = {
   "baseline": baseline,
-  "projection": projectionDistanceBased,
-  "projection2": projectionDistanceBasedVer2,
+  "projection": projectionDistance,
+  "knearest": kNearestDistance,
   "agglomerative": agglomerative
 }
 
