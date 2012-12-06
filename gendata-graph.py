@@ -75,13 +75,14 @@ def detours(numPeople, numCars, width, height):
   for i in xrange(numCars):
     x = random.uniform(0, width)
     y = random.uniform(0, height)
-    drivers.append((x, y))
+    drivers.append( (x, y) )
+    people.append( (x, y, 4) )
   x = random.uniform(0, width)
   y = random.uniform(0, height)
   goal = (x, y)
   for i in xrange(numPeople - numCars):
     pass
-  pass
+  return people, goal
 
 def dense(numPeople, numCars, width, height):
   pass
@@ -228,6 +229,7 @@ parser_gen = subparsers.add_parser('gen', help='Generate a dataset')
 parser_gen.add_argument("model", help="Model to use in generation", choices=algorithms.keys())
 parser_gen.add_argument("numpeople", help="Number of people", type=int)
 parser_gen.add_argument("numcars", help="Number of drivers", type=int)
+parser_gen.add_argument("-c", "--capacity", help="Number of people per car", type=int, default=4)
 parser_gen.set_defaults(func=gen)
 
 # graphing
