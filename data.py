@@ -102,11 +102,11 @@ class Explorer:
         yield (modified, self.distances[origin][dest]["weight"])
 
   def routes_completed(self, routes):
-    # everyone ends up at goal
-    num_transported = -len(routes)
+    num_transported = 0
     for route in routes:
       if route[-1] != (self.num_locations - 1):
         # not at goal
         return False
       num_transported += len(route)
-    return num_transported == self.num_people
+    # everyone + they end up at goal
+    return num_transported == (self.num_people + len(routes))
