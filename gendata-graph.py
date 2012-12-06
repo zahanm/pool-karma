@@ -51,10 +51,10 @@ def clustered(numPeople, numCars, width, height):
   for i in xrange(numPeople - numCars):
     center = random.choice(drivers)
     x = random.gauss(center[0], ARGV.stddev)
-    while x < 0 or x > 10:
+    while x < 0 or x > width:
       x = random.gauss(center[0], ARGV.stddev)
     y = random.gauss(center[1], ARGV.stddev)
-    while y < 0 or y > 10:
+    while y < 0 or y > height:
       y = random.gauss(center[0], ARGV.stddev)
     people.append( (x, y, 0) )
   # goal
@@ -87,7 +87,7 @@ def detours(numPeople, numCars, width, height):
     if x > width: x = width
     y += random.gauss(0, ARGV.stddev)
     if y < 0: y = 0.0
-    if y > width: y = width
+    if y > height: y = height
     people.append( (x, y, 0) )
   return people, goal
 
@@ -96,20 +96,34 @@ def dense(numPeople, numCars, width, height):
   Drivers, passengers and goal from gaussian
   """
   people = []
-  midx, midy = 0.5 * width, 0.5 * height
+  midx, midy = 0.333 * width, 0.333 * height
   # drivers
   for i in xrange(numCars):
     x = random.gauss(midx, ARGV.stddev)
+    while x < 0 or x > width:
+      x = random.gauss(midx, ARGV.stddev)
     y = random.gauss(midy, ARGV.stddev)
+    while y < 0 or y > height:
+      y = random.gauss(midy, ARGV.stddev)
     people.append( (x, y, ARGV.capacity) )
   # passengers
   for i in xrange(numPeople - numCars):
     x = random.gauss(midx, ARGV.stddev)
+    while x < 0 or x > width:
+      x = random.gauss(midx, ARGV.stddev)
     y = random.gauss(midy, ARGV.stddev)
+    while y < 0 or y > height:
+      y = random.gauss(midy, ARGV.stddev)
     people.append( (x, y, 0) )
   # goal
+  midx *= 2
+  midy *= 2
   x = random.gauss(midx, ARGV.stddev)
+  while x < 0 or x > width:
+    x = random.gauss(midx, ARGV.stddev)
   y = random.gauss(midy, ARGV.stddev)
+  while y < 0 or y > height:
+    y = random.gauss(midy, ARGV.stddev)
   goal = (x, y)
   return people, goal
 
