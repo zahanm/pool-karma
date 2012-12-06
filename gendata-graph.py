@@ -29,7 +29,7 @@ def uniform(numPeople, numCars, width, height):
       break
     # people locations
     elif (i in carNodes):
-      people.append( (x, y, 4) )
+      people.append( (x, y, ARGV.capacity) )
     else:
       people.append( (x, y, 0) )
 
@@ -46,7 +46,7 @@ def clustered(numPeople, numCars, width, height):
     x = random.uniform(0, width)
     y = random.uniform(0, height)
     drivers[i] = (x,y)
-    people.append( (x, y, 4) )
+    people.append( (x, y, ARGV.capacity) )
   # cluster other people around drivers
   stddev = 1.0
   for i in xrange(numPeople - numCars):
@@ -74,7 +74,7 @@ def detours(numPeople, numCars, width, height):
     x = random.uniform(0, width)
     y = random.uniform(0, height)
     drivers.append( (x, y) )
-    people.append( (x, y, 4) )
+    people.append( (x, y, ARGV.capacity) )
   x = random.uniform(0, width)
   y = random.uniform(0, height)
   goal = (x, y)
