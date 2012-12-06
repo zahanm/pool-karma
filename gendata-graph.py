@@ -127,6 +127,34 @@ def dense(numPeople, numCars, width, height):
   goal = (x, y)
   return people, goal
 
+def circular(numPeople, numCars, width, height):
+  """
+  passengers around goal in center
+  drivers further out
+  """
+  people = []
+  # goal
+  goal = (0.5 * width, 0.5 * height)
+  # drivers
+  for i in xrange(numCars):
+    x = random.gauss(goal[0], ARGV.stddev)
+    while x < 0 or x > width:
+      x = random.gauss(goal[0], ARGV.stddev)
+    y = random.gauss(goal[1], ARGV.stddev)
+    while y < 0 or y > height:
+      y = random.gauss(goal[1], ARGV.stddev)
+    people.append( (x, y, ARGV.capacity) )
+  # passengers
+  for i in xrange(numPeople - numCars):
+    x = random.gauss(goal[0], ARGV.stddev * 2)
+    while x < 0 or x > width:
+      x = random.gauss(goal[0], ARGV.stddev * 2)
+    y = random.gauss(goal[1], ARGV.stddev * 2)
+    while y < 0 or y > height:
+      y = random.gauss(goal[1], ARGV.stddev * 2)
+    people.append( (x, y, 0) )
+  return people, goal
+
 def write_out(out, people, goal):
   """
   Write out data in required format
@@ -155,7 +183,8 @@ algorithms = {
   "uniform": uniform,
   "clustered": clustered,
   "detours": detours,
-  "dense": dense
+  "dense": dense,
+  "circular": circular
 }
 
 # generate random locations for people and goal state
