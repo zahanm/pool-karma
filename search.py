@@ -44,25 +44,26 @@ class DFS:
   def __init__(self, actions, goal):
     self.actions = actions
     self.goal = goal
+    self.gmin_cost = float("inf")
     # no need, I know the graph is acyclic
     # self.explored = set()
 
   def __call__(self, start):
     # recursive inner function
-    def dfs(s, path_cost, global_min_cost):
+    def dfs(s, path_cost):
       if self.goal(s):
         return path_cost, s
       min_cost = float("inf")
       min_state = None
       for t, cost in self.actions(s):
-        if path_cost + cost > global_min_cost:
+        if path_cost + cost > self.gmin_cost:
           continue
-        final_cost, final_state = dfs(t, path_cost + cost, global_min_cost)
+        final_cost, final_state = dfs(t, path_cost + cost)
         if final_cost < min_cost:
           min_cost = final_cost
           min_state = final_state
-      if min_cost < global_min_cost:
-        global_min_cost = min_cost
+      if min_cost < self.gmin_cost:
+        self.gmin_cost = min_cost
       return min_cost, min_state
     # start algorithm
-    return dfs( start, 0.0, float("inf") )
+    return dfs( start, 0.0 )
