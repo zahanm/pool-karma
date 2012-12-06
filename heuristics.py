@@ -48,6 +48,13 @@ def pickup_cost(ex, driver, passengers):
   ex.pickup_costs[driver][pass_key] = (min_path_cost, min_path)
   return (min_path_cost, min_path)
 
+def distances_to_goal(ex, routes):
+  approx = 0.0
+  for route in routes:
+    if route[-1] != ex.num_locations - 1:
+      approx += ex.distances[route[-1]][ex.num_locations - 1]["weight"]
+  return approx
+
 def get_passenger_driver_projection_matrix(ex, list_people):
   """
   get numpy matrix of passenger x driver

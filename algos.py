@@ -1,8 +1,10 @@
 
+import functools
+
 import numpy as np
 
 import heuristics
-from search import exhaustive, UCS, DFS
+from search import exhaustive, UCS, DFS, AStar
 
 #
 # search algorithms
@@ -16,11 +18,15 @@ def baseline(ex):
   """
   return exhaustive(ex, ex.iter_passenger_assignments(), heuristics.pickup_all_cost)
 
-def searchucs(ex):
+def ucs(ex):
   return search(ex, UCS(ex.add_waypoints, ex.routes_completed))
 
-def searchdfs(ex):
+def dfs(ex):
   return search(ex, DFS(ex.add_waypoints, ex.routes_completed))
+
+def astar(ex):
+  h = functools.partial(heuristics.distances_to_goal, ex)
+  return search(ex, AStar(ex.add_waypoints, ex.routes_completed, h))
 
 def search(ex, searcher):
   """
@@ -318,8 +324,9 @@ def kNearestDistance(ex):
 
 algorithms = {
   "baseline": baseline,
-  "searchucs": searchucs,
-  "searchdfs": searchdfs,
+  "ucs": ucs,
+  "dfs": dfs,
+  "astar": astar,
   "projection": projectionDistance,
   "knearest": kNearestDistance,
   "agglomerative": agglomerative

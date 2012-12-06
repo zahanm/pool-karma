@@ -25,8 +25,7 @@ class UCS:
   def __call__(self, start):
     heappush(self.frontier, (0, start))
     while True:
-      if len(self.frontier) == 0:
-        return None
+      if len(self.frontier) == 0: return None
       priority, s = heappop(self.frontier)
       if self.goal(s):
         return priority, s
@@ -38,15 +37,14 @@ class UCS:
 
 class DFS:
   """
-  Depth first search for optimal path cost
+  (pruned) exhaustive Depth first search for optimal path cost
   """
 
   def __init__(self, actions, goal):
     self.actions = actions
     self.goal = goal
     self.gmin_cost = float("inf")
-    # no need, I know the graph is acyclic
-    # self.explored = set()
+    self.explored = set()
 
   def __call__(self, start):
     # recursive inner function
@@ -56,8 +54,9 @@ class DFS:
       min_cost = float("inf")
       min_state = None
       for t, cost in self.actions(s):
-        if path_cost + cost > self.gmin_cost:
+        if t in self.explored or (path_cost + cost) > self.gmin_cost:
           continue
+        self.explored.add(t)
         final_cost, final_state = dfs(t, path_cost + cost)
         if final_cost < min_cost:
           min_cost = final_cost
@@ -67,3 +66,28 @@ class DFS:
       return min_cost, min_state
     # start algorithm
     return dfs( start, 0.0 )
+
+class AStar:
+  """
+  A star search for optimal path cost
+  """
+
+  def __init__(self, actions, goal, heuristic):
+    self.actions = actions
+    self.goal = goal
+    self.h = heuristic
+    self.explored = set()
+    self.frontier = []
+
+  def __call__(self, start):
+    heappush(self.frontier, (self.h(start), start))
+    while True:
+      if len(self.frontier) == 0: return None
+      cost, s = heappop(self.frontier)
+      if self.goal(s):
+        return cost, s
+      self.explored.add(s)
+      for t, delta in self.actions(s):
+        if t in self.explored:
+          continue
+        heappush(self.frontier, (cost + delta + self.h(t) - self.h(s), t))
