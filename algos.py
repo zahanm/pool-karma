@@ -19,9 +19,17 @@ def baseline(ex):
 def search(ex):
   """
   Use state space model outlined in paper
+  returns (min_cost, min_assignment)
   """
   searcher = UCS(ex.add_waypoints, ex.routes_completed)
-  return searcher(ex.starting_routes())
+  min_cost, state = searcher(ex.starting_routes())
+  assignment = [ None ] * ex.num_people
+  i = 0
+  for person in xrange(ex.num_people):
+    if ex.people_capacity[person] > 0:
+      assignment[person] = list(state[i])
+      i += 1
+  return min_cost, assignment
 
 #
 # custom solutions

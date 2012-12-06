@@ -102,7 +102,8 @@ class Explorer:
         yield (modified, self.distances[origin][dest]["weight"])
 
   def routes_completed(self, routes):
-    num_transported = 0
+    # everyone ends up at goal
+    num_transported = -len(routes)
     for route in routes:
       if route[-1] != (self.num_locations - 1):
         # not at goal
