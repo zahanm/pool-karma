@@ -4,12 +4,13 @@ import sys
 import numpy as np
 import os
 import os.path as path
+import argparse
 
 import networkx as nx
 
 from search import Explorer
 
-def read_data(fname):
+def read_data(f):
   """
   Data format:
   <number of locations>
@@ -24,38 +25,37 @@ def read_data(fname):
   note that person-id is the same as location-id
   goal state is (number of locations - 1)
   """
-  with open(fname) as f:
-    ex = Explorer()
-    # num locations
-    ex.num_locations = int(f.next().strip())
-    ex.num_people = ex.num_locations - 1
-    ex.locations = [ None ] * ex.num_locations
-    ex.people_capacity = [ None ] * ex.num_people
-    ex.pickup_costs = [ {} for i in xrange(ex.num_people) ]
-    for i in xrange(ex.num_people):
-      # people location and capacities
-      line = f.next().rstrip()
-      m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)\s+(\d+)", line)
-      ex.locations[i] = (float(m.group(1)), float(m.group(3)))
-      ex.people_capacity[i] = int(m.group(5))
-    # parse goal location
+  ex = Explorer(ARGV.verbose)
+  # num locations
+  ex.num_locations = int(f.next().strip())
+  ex.num_people = ex.num_locations - 1
+  ex.locations = [ None ] * ex.num_locations
+  ex.people_capacity = [ None ] * ex.num_people
+  ex.pickup_costs = [ {} for i in xrange(ex.num_people) ]
+  for i in xrange(ex.num_people):
+    # people location and capacities
     line = f.next().rstrip()
-    m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)", line)
-    ex.goal = (float(m.group(1)), float(m.group(3)))
-    ex.locations[-1] = ex.goal
-    # num edges
-    ex.num_edges = ((ex.num_locations - 1) * ex.num_locations) / 2
-    ex.distances = nx.Graph()
-    for i in xrange(ex.num_edges):
-      # edge weights
-      line = f.next().rstrip()
-      m = re.search(r"(\d+)\s+(\d+)\s+(\d+(\.\d+)?)", line)
-      origin = int(m.group(1))
-      dest = int(m.group(2))
-      wt = float(m.group(3))
-      ex.distances.add_edge(origin, dest, weight=wt)
-    ex.verify_initialized()
-    return ex
+    m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)\s+(\d+)", line)
+    ex.locations[i] = (float(m.group(1)), float(m.group(3)))
+    ex.people_capacity[i] = int(m.group(5))
+  # parse goal location
+  line = f.next().rstrip()
+  m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)", line)
+  ex.goal = (float(m.group(1)), float(m.group(3)))
+  ex.locations[-1] = ex.goal
+  # num edges
+  ex.num_edges = ((ex.num_locations - 1) * ex.num_locations) / 2
+  ex.distances = nx.Graph()
+  for i in xrange(ex.num_edges):
+    # edge weights
+    line = f.next().rstrip()
+    m = re.search(r"(\d+)\s+(\d+)\s+(\d+(\.\d+)?)", line)
+    origin = int(m.group(1))
+    dest = int(m.group(2))
+    wt = float(m.group(3))
+    ex.distances.add_edge(origin, dest, weight=wt)
+  ex.verify_initialized()
+  return ex
 
 def baseline(ex):
   """
@@ -107,8 +107,9 @@ def agglomerative(ex):
       person_dist.append(ex.distances[i][j]['weight'])
     distance_array.append(person_dist)
   distance_matrix = np.matrix(distance_array)
-  print "distance_matrix"
-  print distance_matrix
+  if ARGV.verbose:
+    print "distance_matrix"
+    print distance_matrix
 
 
   # while there is an unassigned non-car person, assign the person with minimum distance to a car with space. Then recenter the location of that car.
@@ -154,8 +155,9 @@ def projectionDistanceBased(ex):
   projection_matrix = ex.get_passenger_driver_projection_matrix(range(ex.num_people))
   index_matrix = ex.get_passenger_driver_index_matrix(range(ex.num_people))
 
-  print projection_matrix
-  print index_matrix
+  if ARGV.verbose:
+    print projection_matrix
+    print index_matrix
 
   # for each global minimum projection, assign passenger to the car
   # remove passenger row
@@ -169,8 +171,9 @@ def projectionDistanceBased(ex):
     min_index_1 = min_index % num_avail_cars
     (min_passenger_idx, min_car_idx) = index_matrix[min_index_0][min_index_1]
 
-    print projection_matrix
-    print 'min: %s at (%s, %s)' % (str(np.nanmin(projection_matrix)), str(min_index_0), str(min_index_1))
+    if ARGV.verbose:
+      print projection_matrix
+      print 'min: %s at (%s, %s)' % (str(np.nanmin(projection_matrix)), str(min_index_0), str(min_index_1))
 
     # assign min passenger to min car
     list_min_car_passengers = assignment[min_car_idx]
@@ -179,7 +182,7 @@ def projectionDistanceBased(ex):
     list_min_car_passengers.append(min_passenger_idx)
     if len(list_min_car_passengers) <= ex.people_capacity[min_car_idx] - 1:
       assignment[min_car_idx] = list_min_car_passengers
-      print 'assign passenger %s to driver %s' % (str(min_passenger_idx), str(min_car_idx))
+      if ARGV.verbose: print 'assign passenger %s to driver %s' % (str(min_passenger_idx), str(min_car_idx))
 
     # remove car column if car is full after taking this passenger
     if (len(list_min_car_passengers) == ex.people_capacity[min_car_idx] - 1):
@@ -231,8 +234,9 @@ def projectionDistanceBased(ex):
       distance_matrix = np.delete(distance_matrix, min_index_0, axis=0)
       index_matrix = np.delete(index_matrix, min_index_0, axis=0)
 
-  print 'assignment:'
-  print assignment
+  if ARGV.verbose:
+    print 'assignment:'
+    print assignment
 
   # calculate cost
   total_cost = 0.0
@@ -255,8 +259,9 @@ def projectionDistanceBasedVer2(ex):
   projection_matrix = ex.get_passenger_driver_distance_matrix(range(ex.num_people))
   index_matrix = ex.get_passenger_driver_index_matrix(range(ex.num_people))
 
-  print projection_matrix
-  print index_matrix
+  if ARGV.verbose:
+    print projection_matrix
+    print index_matrix
 
   # for each global minimum projection, assign passenger to the car
   # remove passenger row
@@ -270,8 +275,9 @@ def projectionDistanceBasedVer2(ex):
     min_index_1 = min_index % num_avail_cars
     (min_passenger_idx, min_car_idx) = index_matrix[min_index_0][min_index_1]
 
-    print projection_matrix
-    print 'min: %s at (%s, %s)' % (str(np.nanmin(projection_matrix)), str(min_index_0), str(min_index_1))
+    if ARGV.verbose:
+      print projection_matrix
+      print 'min: %s at (%s, %s)' % (str(np.nanmin(projection_matrix)), str(min_index_0), str(min_index_1))
 
     # assign min passenger to min car
     list_min_car_passengers = assignment[min_car_idx]
@@ -280,7 +286,7 @@ def projectionDistanceBasedVer2(ex):
     list_min_car_passengers.append(min_passenger_idx)
     if len(list_min_car_passengers) <= ex.people_capacity[min_car_idx] - 1:
       assignment[min_car_idx] = list_min_car_passengers
-      print 'assign passenger %s to driver %s' % (str(min_passenger_idx), str(min_car_idx))
+      if ARGV.verbose: print 'assign passenger %s to driver %s' % (str(min_passenger_idx), str(min_car_idx))
 
     # remove car column if car is full after taking this passenger
     if (len(list_min_car_passengers) == ex.people_capacity[min_car_idx] - 1):
@@ -332,8 +338,9 @@ def projectionDistanceBasedVer2(ex):
       distance_matrix = np.delete(distance_matrix, min_index_0, axis=0)
       index_matrix = np.delete(index_matrix, min_index_0, axis=0)
 
-  print 'assignment:'
-  print assignment
+  if ARGV.verbose:
+    print 'assignment:'
+    print assignment
 
   # calculate cost
   total_cost = 0.0
@@ -345,13 +352,13 @@ def projectionDistanceBasedVer2(ex):
 
   return (total_cost, assignment)
 
-def output_results(ex, inp_fname, method, min_cost, assignment):
+def output_results(ex, input_f, method, min_cost, assignment):
   print "---* {} results *---".format(method)
   cwd = path.dirname(path.abspath(__file__))
   output_folder = path.join(cwd, "output")
   if not path.exists(output_folder):
     os.mkdir(output_folder)
-  output_fname = method + "_" + path.basename(inp_fname)
+  output_fname = method + "_" + path.basename(input_f.name)
   with open(path.join(output_folder, output_fname), "w") as out:
     print "Minimum cost: {:.2f}".format(min_cost)
     out.write(str(min_cost) + "\n")
@@ -381,20 +388,19 @@ algorithms = {
 }
 
 def main():
-  if len(sys.argv) != 3:
-    print "usage: {} <method> <input filename>".format(__file__)
-    sys.exit(1)
-  inp_fname = sys.argv[2]
-  ex = read_data(inp_fname)
+  ex = read_data(ARGV.input)
   print "---* dataset *---"
   print ex
   print "Drivers: {}".format(filter(lambda p: ex.people_capacity[p] > 0, range(ex.num_people)))
-  method = sys.argv[1]
-  if method not in algorithms:
-    print "Invalid method specified: {}".format(method)
-    sys.exit(1)
-  min_cost, assignment = algorithms[method](ex)
-  output_results(ex, inp_fname, method, min_cost, assignment)
+  if ARGV.verbose: print "---* {} running *---".format(ARGV.method)
+  min_cost, assignment = algorithms[ARGV.method](ex)
+  output_results(ex, ARGV.input, ARGV.method, min_cost, assignment)
+
+parser = argparse.ArgumentParser(description='Carpooling')
+parser.add_argument("-v", "--verbose", help="Include debug output", action="store_true")
+parser.add_argument("method", help="Algorithm to use for solving", choices=algorithms.keys())
+parser.add_argument("input", help="Input filename", type=argparse.FileType('r'))
+ARGV = parser.parse_args()
 
 if __name__ == '__main__':
   main()

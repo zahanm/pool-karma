@@ -1,3 +1,4 @@
+
 import itertools
 import numpy as np
 import math
@@ -7,7 +8,7 @@ class Explorer:
   Stores the weights from the problem in a distances matrix
   """
 
-  def __init__(self):
+  def __init__(self, verbose = False):
     self.num_locations = None
     self.num_edges = None
     self.distances = None
@@ -16,6 +17,7 @@ class Explorer:
     self.people_capacity = None
     self.pickup_costs = None
     self.goal = None
+    self.verbose = verbose
 
   def verify_initialized(self):
     """
@@ -86,7 +88,7 @@ class Explorer:
       return self.pickup_costs[driver][pass_key]
 
     # calculate shortest path that passes all these nodes
-    print "Driver: {}, Assignment: {} -- ".format(driver, passengers),
+    if self.verbose: print "Driver: {}, Assignment: {} -- ".format(driver, passengers),
 
     # get all possible paths starting from driver to goal
     list_paths = []
@@ -106,7 +108,7 @@ class Explorer:
       if path_cost < min_path_cost:
         min_path_cost = path_cost
         min_path = path
-    print "=> Cost: {:.4}".format(min_path_cost)
+    if self.verbose: print "=> Cost: {:.4}".format(min_path_cost)
     self.pickup_costs[driver][pass_key] = (min_path_cost, min_path)
     return (min_path_cost, min_path)
 
