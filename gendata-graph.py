@@ -48,15 +48,14 @@ def clustered(numPeople, numCars, width, height):
     drivers[i] = (x,y)
     people.append( (x, y, ARGV.capacity) )
   # cluster other people around drivers
-  stddev = 1.0
   for i in xrange(numPeople - numCars):
     center = random.choice(drivers)
-    x = random.gauss(center[0], stddev)
+    x = random.gauss(center[0], ARGV.stddev)
     while x < 0 or x > 10:
-      x = random.gauss(center[0], stddev)
-    y = random.gauss(center[1], stddev)
+      x = random.gauss(center[0], ARGV.stddev)
+    y = random.gauss(center[1], ARGV.stddev)
     while y < 0 or y > 10:
-      y = random.gauss(center[0], stddev)
+      y = random.gauss(center[0], ARGV.stddev)
     people.append( (x, y, 0) )
   # goal
   x = random.uniform(0, width)
@@ -69,6 +68,7 @@ def detours(numPeople, numCars, width, height):
   Drivers, goal from uniform
   Passengers from points perturbed off path of driver to goal
   """
+  people = []
   drivers = []
   for i in xrange(numCars):
     x = random.uniform(0, width)
@@ -79,7 +79,12 @@ def detours(numPeople, numCars, width, height):
   y = random.uniform(0, height)
   goal = (x, y)
   for i in xrange(numPeople - numCars):
-    pass
+    chosen = random.choice(drivers)
+    x = random.uniform(min(chosen[0], goal[0]), max(chosen[0], goal[0]))
+    y = random.uniform(min(chosen[1], goal[1]), max(chosen[1], goal[1]))
+    x += random.gauss(0, ARGV.stddev)
+    y += random.gauss(0, ARGV.stddev)
+    people.append( (x, y, 0) )
   return people, goal
 
 def dense(numPeople, numCars, width, height):
@@ -111,7 +116,8 @@ def dist(a,b):
 
 algorithms = {
   "uniform": uniform,
-  "clustered": clustered
+  "clustered": clustered,
+  "detours": detours
 }
 
 # generate random locations for people and goal state
@@ -186,9 +192,9 @@ def graph():
     if not path.exists(path.join(cwd, 'plots')):
       os.mkdir(path.join(cwd, 'plots'))
     plt.savefig(path.join(cwd, 'plots', path.splitext(path.basename(f.name))[0] + '.png'))
+    print "Plotted: " + path.splitext(path.basename(f.name))[0] + '.png'
   # now plot for algorithms
   for output in glob(path.join(output_folder, generated_fname_glob)):
-    print "Plotted: " + path.basename(output)
     solver_algorithm = path.basename(output).split("_")[0]
     solver_algorithm = solver_algorithm[:1].upper() + solver_algorithm[1:]
     # plot paths of drivers
@@ -211,6 +217,7 @@ def graph():
         if not path.exists(path.join(cwd, 'plots')):
           os.mkdir(path.join(cwd, 'plots'))
         plt.savefig(path.join(cwd, 'plots', path.splitext(path.basename(output))[0] + '.png'))
+        print "Plotted: " + path.splitext(path.basename(output))[0] + '.png'
       plt.clf()
   # old plotting code
   # plt.plot(xs[ cats == 1 ], ys[ cats == 1 ], "bo")
@@ -228,6 +235,7 @@ parser_gen.add_argument("model", help="Model to use in generation", choices=algo
 parser_gen.add_argument("numpeople", help="Number of people", type=int)
 parser_gen.add_argument("numcars", help="Number of drivers", type=int)
 parser_gen.add_argument("-c", "--capacity", help="Number of people per car", type=int, default=4)
+parser_gen.add_argument("-s", "--stddev", help="Std dev for gaussian distributions", type=float, default=1.0)
 parser_gen.set_defaults(func=gen)
 
 # graphing
