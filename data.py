@@ -91,7 +91,7 @@ class Explorer:
     @param routes list of tuples
     """
     for i, route in enumerate(routes):
-      if route[-1] == (self.num_locations - 1):
+      if route[-1] == (self.num_locations - 1) or len(route) > self.people_capacity[i]:
         continue
       if self.verbose: print "Adding to route {}".format(i)
       for dest in xrange(self.num_locations):
