@@ -13,6 +13,7 @@ class Explorer:
     self.num_people = None
     self.locations = None
     self.people_capacity = None
+    self.car_capacity = None
     self.pickup_costs = None
     self.goal = None
     self.verbose = verbose
@@ -30,6 +31,9 @@ class Explorer:
       assert loc != None
     assert self.people_capacity != None
     for cap in self.people_capacity:
+      assert cap != None
+    assert self.car_capacity != None
+    for cap in self.car_capacity:
       assert cap != None
     assert self.pickup_costs != None
     assert self.goal != None
@@ -91,7 +95,7 @@ class Explorer:
     @param routes list of tuples
     """
     for i, route in enumerate(routes):
-      if route[-1] == (self.num_locations - 1) or len(route) > self.people_capacity[i]:
+      if route[-1] == (self.num_locations - 1) or len(route) > self.car_capacity[i]:
         continue
       if self.verbose: print "Adding to route {}".format(i)
       for dest in xrange(self.num_locations):

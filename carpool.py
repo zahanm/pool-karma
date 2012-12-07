@@ -32,12 +32,15 @@ def read_data(f):
   ex.locations = [ None ] * ex.num_locations
   ex.people_capacity = [ None ] * ex.num_people
   ex.pickup_costs = [ {} for i in xrange(ex.num_people) ]
+  ex.car_capacity = []
   for i in xrange(ex.num_people):
     # people location and capacities
     line = f.next().rstrip()
     m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)\s+(\d+)", line)
     ex.locations[i] = (float(m.group(1)), float(m.group(3)))
     ex.people_capacity[i] = int(m.group(5))
+    if int(m.group(5)) > 0:
+      ex.car_capacity.append(int(m.group(5)))
   # parse goal location
   line = f.next().rstrip()
   m = re.search(r"(\d+(\.\d+)?)\s+(\d+(\.\d+)?)", line)
