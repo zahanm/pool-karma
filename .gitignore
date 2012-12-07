@@ -40,3 +40,8 @@ nosetests.xml
 
 # os x
 .DS_Store
+
+# project output
+/results/
+/time/
+
